@@ -1,4 +1,4 @@
-package com.petproject.cardgame.Config;
+package com.petproject.cardgame.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
