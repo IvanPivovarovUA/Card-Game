@@ -1,0 +1,17 @@
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/CardGameRealm
+      client:
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8080/realms/CardGameRealm
+        registration:
+          keycloak:
+            client-id: card-game-client
+            client-secret: bcWtQ9ZG4Bq4A0R6ND9Iagfi1Y5xlzvk
+            scope: openid
+server:
+  port: 8081
