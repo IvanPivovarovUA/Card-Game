@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface GameTableRepository extends MongoRepository<GameTableEntity, String> {
 
     Optional<GameTableEntity> findById(String Id);
+
 }

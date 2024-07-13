@@ -1,17 +1,24 @@
 package com.petproject.cardgame.entity;
 
-import com.petproject.cardgame.entity.Card.CardEntity;
+import com.petproject.cardgame.model.Card;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 import java.util.List;
 
+@Data
+@AllArgsConstructor
 public class PlayerEntity {
-    private String Id;
-    private int HP;// 0 - 25
-    private int Mana;// 0 - 10
-    private List<CardEntity> CardsOnHand;
-    private List<CardEntity> CardsOnTable;
 
-    public String getId() {
-        return Id;
+    private int Hp;// 0 - 25
+    private int Mana;// 0 - 10
+    private List<Card> CardsOnHand;
+    private List<CardOnTableEntity> CardsOnTable;
+
+    public void plusHp(int Hp) {
+        this.Hp += Hp;
+    }
+    public void plusMana(int Mana) {
+        this.Mana += Mana;
     }
 }
