@@ -6,15 +6,17 @@ import com.petproject.cardgame.entity.PlayerEntity;
 import com.petproject.cardgame.model.Card;
 import com.petproject.cardgame.repository.GameTableRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Service
 public class CardService {
 
     @Autowired
     GameTableRepository gameTableRepository;
 
-    private void addCardInHand() {
+    public void addCardInHand() {
         GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();
 
         if (gameTableEntity.getIsFirstPlayerStep()) {
@@ -46,15 +48,15 @@ public class CardService {
         return cardOnTableEntity;
     }
 
-    private void useCard(int CardId) {
+    public void useCard(int CardId) {
         useCard(CardId,Optional.empty());
     }
 
-    private void useCard(int CardId, int WorkCardId) {
+    public void useCard(int CardId, int WorkCardId) {
         useCard(CardId,Optional.of(WorkCardId));
     }
 
-    private void useCard(int MainCardId, Optional<Integer> WorkCardId) {
+    public void useCard(int MainCardId, Optional<Integer> WorkCardId) {
         GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();
         PlayerEntity MainP;
         PlayerEntity WorkP;

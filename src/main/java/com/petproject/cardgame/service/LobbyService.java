@@ -60,15 +60,20 @@ public class LobbyService {
         return false;
     }
 
-    public void removeUserFromLobby(String UserId) {
+    public void addUserInLobby() {
+        String UserId = getUserId();
+
+        GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();
+
+        gameTableEntity.getUserLobbyEntity().getWantToPlayUsers().add(UserId);
+    }
+    public void removeUserFromLobby() {
+        String UserId = getUserId();
+
         GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();
 
         gameTableEntity.getUserLobbyEntity().getWantToPlayUsers().remove(UserId);
     }
 
-    public void addUserInLobby(String newUserId) {
-        GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();
 
-        gameTableEntity.getUserLobbyEntity().getWantToPlayUsers().add(newUserId);
-    }
 }
