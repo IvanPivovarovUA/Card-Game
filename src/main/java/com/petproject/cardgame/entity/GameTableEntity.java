@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document("gametable")
 public class GameTableEntity {
     @Id
-    private String Id;
+    public String Id;
 
     private UserLobbyEntity userLobbyEntity;
 

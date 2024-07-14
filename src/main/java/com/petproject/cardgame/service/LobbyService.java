@@ -3,10 +3,12 @@ package com.petproject.cardgame.service;
 import com.petproject.cardgame.entity.GameTableEntity;
 import com.petproject.cardgame.entity.UserLobbyEntity;
 import com.petproject.cardgame.repository.GameTableRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
@@ -16,13 +18,18 @@ public class LobbyService {
     private GameTableRepository gameTableRepository;
 
     //override
-    private GameTableEntity getGameTable() {
-        Optional<GameTableEntity> gameTableEntityOptional = gameTableRepository.findById("1");
+    public GameTableEntity getGameTable() {
+
+        Optional<GameTableEntity> gameTableEntityOptional = gameTableRepository.findById("669418f7ad9442136adfd4ef");
 
         if (gameTableEntityOptional.isEmpty()) {
+            System.out.println("sfgsfgdfg");
             GameTableEntity gameTableEntity = new GameTableEntity();
-            gameTableEntity.setId("1");
-            gameTableEntity.setUserLobbyEntity(new UserLobbyEntity());
+//            gameTableEntity.setId("1");
+
+            UserLobbyEntity userLobbyEntity = new UserLobbyEntity();
+            userLobbyEntity.setWantToPlayUsers(new ArrayList<>());
+            gameTableEntity.setUserLobbyEntity(userLobbyEntity);
 
             gameTableRepository.save(gameTableEntity);
             return gameTableEntity;
@@ -61,14 +68,19 @@ public class LobbyService {
     }
 
     public void addUserInLobby() {
-        String UserId = getUserId();
+        String UserId = "Testfh";
+//                getUserId();
 
-        GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();
+        GameTableEntity gameTableEntity = getGameTable();
+//                gameTableRepository.findById("1").get();
+
 
         gameTableEntity.getUserLobbyEntity().getWantToPlayUsers().add(UserId);
+        gameTableRepository.save(gameTableEntity);
     }
     public void removeUserFromLobby() {
-        String UserId = getUserId();
+        String UserId = "Test";
+//                getUserId();
 
         GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();
 
