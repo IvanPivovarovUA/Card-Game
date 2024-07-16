@@ -31,9 +31,7 @@ public class LobbyController {
     @MessageMapping("/hello")
     @SendTo("/topic/greetings")
     public LobbyEntity addUserInLobby(Principal principal) {
-        
-        lobbyService.addUserInLobby(principal.getName());
-        System.out.println(lobbyService.getGameTable().getLobbyEntity().toString());
-        return lobbyService.getGameTable().getLobbyEntity();
+
+         return lobbyService.getGameTable().getLobbyEntity();
     }
 }

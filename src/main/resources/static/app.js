@@ -42,11 +42,16 @@ function showGreeting(message) {
     $("#w").html("<li>" + message.Winner + "</li>");
 
 }
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 $(function () {
     stompClient.activate();
 
-
     $( "#start" ).click(() => sendName());
+
+    sleep(1000).then(() => { sendName(); });
+
 });
 
