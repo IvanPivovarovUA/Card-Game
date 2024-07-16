@@ -3,10 +3,9 @@ const stompClient = new StompJs.Client({
 });
 
 stompClient.onConnect = (frame) => {
-    setConnected(true);
     console.log('Connected: ' + frame);
     stompClient.subscribe('/topic/greetings', (greeting) => {
-        showGreeting(JSON.parse(greeting.body).Text);
+        showGreeting(JSON.parse(greeting.body));
     });
 };
 
@@ -19,48 +18,35 @@ stompClient.onStompError = (frame) => {
     console.error('Additional details: ' + frame.body);
 };
 
-function setConnected(connected) {
-    $("#connect").prop("disabled", connected);
-    $("#disconnect").prop("disabled", !connected);
-    if (connected) {
-        $("#conversation").show();
-    }
-    else {
-        $("#conversation").hide();
-    }
-    $("#greetings").html("");
-}
-
-function connect() {
-    stompClient.activate();
-}
-
-//function disconnect() {
-//    stompClient.deactivate();
-//    setConnected(false);
-//    console.log("Disconnected");
-//}
+/////////////////////
 
 function sendName() {
     console.log("hi0");
     stompClient.publish({
         destination: "/app/hello",
-//        body: JSON.stringify({'name': $("#name").val()}),
         body: JSON.stringify()
     });
     console.log("hi1");
 }
 
 function showGreeting(message) {
+
+//    message.FirstPlayerId();
+
     console.log("hi2");
-    $("#userlist").append("<li>" + message + "</li>");
+
+
+    $("#userlist").html("<li>" + message.WantToPlayUsers + "</li>");
+    $("#f").html("<li>" + message.FirstPlayerId + "</li>");
+    $("#s").html("<li>" + message.SecondPlayerId + "</li>");
+    $("#w").html("<li>" + message.Winner + "</li>");
+
 }
 
 $(function () {
-    connect();
+    stompClient.activate();
 
-//    $("form").on('submit', (e) => e.preventDefault());
-//    $( "#connect" ).click(() => connect());
-//    $( "#disconnect" ).click(() => disconnect());
+
     $( "#start" ).click(() => sendName());
 });
+

@@ -8,9 +8,11 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document("gametable")
 public class GameTableEntity {
     @Id
-    public String Id;
+    public String id;
 
-    private UserLobbyEntity userLobbyEntity;
+    public String Test;
+
+    private LobbyEntity lobbyEntity;
 
     private Boolean IsGameContinues;
     private Boolean IsFirstPlayerStep;

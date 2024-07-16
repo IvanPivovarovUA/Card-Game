@@ -1,6 +1,7 @@
 package com.petproject.cardgame.controller;
 
-import com.petproject.cardgame.entity.GameTableEntity;
+
+import com.petproject.cardgame.entity.LobbyEntity;
 import com.petproject.cardgame.model.Test;
 import com.petproject.cardgame.repository.GameTableRepository;
 import com.petproject.cardgame.service.LobbyService;
@@ -9,6 +10,8 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import java.security.Principal;
 
 
 @Controller
@@ -27,15 +30,10 @@ public class LobbyController {
 
     @MessageMapping("/hello")
     @SendTo("/topic/greetings")
-    public Test addUserInLobby() {
-
-//        lobbyService.addUserInLobby();
-        String e = lobbyService.getGameTable().getUserLobbyEntity().toString();
-        Test t = new Test();
-        t.Text = "sfgdfgfsgdfsg";
-        t.Text = e;
-        return t;
+    public LobbyEntity addUserInLobby(Principal principal) {
+        
+        lobbyService.addUserInLobby(principal.getName());
+        System.out.println(lobbyService.getGameTable().getLobbyEntity().toString());
+        return lobbyService.getGameTable().getLobbyEntity();
     }
-
-
 }
