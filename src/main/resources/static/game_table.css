@@ -1,0 +1,106 @@
+body {
+    background: #009900;
+}
+
+
+
+
+.player_bord {
+    width: 400px;
+
+    display: flex;
+    justify-content: center;
+    background:  #EBBF11;
+
+    padding: 10px;
+    margin: 10px;
+}
+.player_bord button {
+
+    margin-left: 10px;
+}
+
+.blockcentr {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.card_list {
+    display: flex;
+    justify-content: center;
+    height: 110px;
+}
+
+.card {
+    position: relative;
+    width: 70px;
+    height: 100px;
+    margin: 10px;
+
+
+}
+
+.card img {
+    width: 70px;
+    height: 100px;
+}
+
+.hp {
+    background:red;
+
+    padding:5px;
+    position: absolute;
+
+    bottom: 0;
+    left: 0;
+}
+
+.power {
+    background: #EBBF11;
+
+    padding:5px;
+    position: absolute;
+
+    bottom: 0;
+    right: 0;
+}
+
+.mana {
+    background: blue;
+
+    padding:5px;
+    position: absolute;
+
+    top: 0;
+    left: 0;
+}
+
+.somespace {
+    width: 100%;
+    height: 40px;
+    background: #EBBF11;
+}
+
+.redborder {
+     border: 5px solid red;
+     margin: 5px;
+}
+
+.yellowborder {
+     border: 5px solid #EBBF11;
+     margin: 5px;
+}
+.blueborder {
+     border: 5px solid blue;
+     margin: 5px;
+}
+
+
+.timer {
+    display: inline-block;
+    position: fixed;
+    background: #EBBF11;
+    padding:10px;
+}

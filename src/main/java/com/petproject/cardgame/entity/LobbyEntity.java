@@ -7,10 +7,10 @@ import java.util.List;
 @Data
 public class LobbyEntity {
 
-    public String Winner;
+    public String winner;
 
-    public String FirstPlayerId;
-    public String SecondPlayerId;
+    public String firstPlayerId;
+    public String secondPlayerId;
 
-    public List<String> WantToPlayUsers;
+    public List<String> wantToPlayUsers;
 }

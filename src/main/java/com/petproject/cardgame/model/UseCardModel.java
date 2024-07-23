@@ -1,6 +1,9 @@
 package com.petproject.cardgame.model;
 
+import lombok.Data;
+
+@Data
 public class UseCardModel {
-    Integer CardId;
-    Integer WorkCardId;
+    Integer mainCardId;
+    Integer workCardId;
 }

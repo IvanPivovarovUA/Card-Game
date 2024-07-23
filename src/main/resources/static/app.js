@@ -4,9 +4,11 @@ const stompClient = new StompJs.Client({
 
 stompClient.onConnect = (frame) => {
     console.log('Connected: ' + frame);
-    stompClient.subscribe('/topic/greetings', (greeting) => {
+    stompClient.subscribe('/topic/user_list', (greeting) => {
         showGreeting(JSON.parse(greeting.body));
     });
+
+    getUserList();
 };
 
 stompClient.onWebSocketError = (error) => {
@@ -20,28 +22,32 @@ stompClient.onStompError = (frame) => {
 
 /////////////////////
 
-function sendName() {
-    console.log("hi0");
+function getUserList() {
     stompClient.publish({
-        destination: "/app/hello",
+        destination: "/app/get_user_list",
         body: JSON.stringify()
     });
-    console.log("hi1");
+}
+function start() {
+    stompClient.publish({
+        destination: "/app/start",
+        body: JSON.stringify()
+    });
 }
 
 function showGreeting(message) {
 
-//    message.FirstPlayerId();
+    $("#userlist").html("");
+    for (var user in message.wantToPlayUsers) {
+        $("#userlist").append("<li>" + message.wantToPlayUsers[user] + "</li>");
+    }
 
-    console.log("hi2");
-
-
-    $("#userlist").html("<li>" + message.WantToPlayUsers + "</li>");
-    $("#f").html("<li>" + message.FirstPlayerId + "</li>");
-    $("#s").html("<li>" + message.SecondPlayerId + "</li>");
-    $("#w").html("<li>" + message.Winner + "</li>");
+    $("#f").html("<li>" + message.firstPlayerId + "</li>");
+    $("#s").html("<li>" + message.secondPlayerId + "</li>");
+    $("#w").html("<li>" + message.winner + "</li>");
 
 }
+
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -49,9 +55,9 @@ function sleep(ms) {
 $(function () {
     stompClient.activate();
 
-    $( "#start" ).click(() => sendName());
+    $( "#start" ).click(() => start());
 
-    sleep(1000).then(() => { sendName(); });
+//    sleep(1000).then(() => { getUserList(); });
 
 });
 

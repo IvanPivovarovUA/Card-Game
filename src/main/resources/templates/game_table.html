@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Page Title</title>
+<!--    <link rel="stylesheet" href="../static/game_table.css">-->
+    <link rel="stylesheet" href="/game_table.css">
+
+
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
+    <script src="/app2.js"></script>
+
+
+</head>
+    <body>
+        <div class="timer">23s</div>
+
+        <div class="blockcentr">
+    <div class="player_bord redborder">
+        <p id="sp">Enemy 50 hp 3 mana</p>
+    </div>
+</div>
+
+        <div class="card_list" id="sph">
+    <div class="card redborder">
+        <img src="test.jpg">
+        <p class="hp">13</p>
+        <p class="power">7</p>
+        <p class="mana">8</p>
+    </div>
+    <div class="card">
+        <img src="test.jpg">
+        <p class="hp">13</p>
+        <p class="power">7</p>
+        <p class="mana">8</p>
+    </div>
+    <div class="card">
+        <img src="test.jpg">
+        <p class="hp">13</p>
+        <p class="power">7</p>
+        <p class="mana">8</p>
+    </div>
+</div>
+
+        <div class="somespace"></div>
+
+        <div class="card_list" id="spt">
+    <div class="card">
+        <img src="test.jpg">
+        <p class="hp">13</p>
+        <p class="power">7</p>
+        <p class="mana">8</p>
+    </div>
+    <div class="card">
+        <img src="test.jpg">
+        <p class="hp">13</p>
+        <p class="power">7</p>
+        <p class="mana">8</p>
+    </div>
+    <div class="card">
+        <img src="test.jpg">
+        <p class="hp">13</p>
+        <p class="power">7</p>
+        <p class="mana">8</p>
+    </div>
+</div>
+        <div class="card_list" id="fpt">
+            <div class="card blueborder">
+                <img src="test.jpg">
+                <p class="hp">13</p>
+                <p class="power">7</p>
+                <p class="mana">8</p>
+            </div>
+            <div class="card redborder">
+                <img src="test.jpg">
+                <p class="hp">13</p>
+                <p class="power">7</p>
+                <p class="mana">8</p>
+            </div>
+            <div class="card">
+                <img src="test.jpg">
+                <p class="hp">13</p>
+                <p class="power">7</p>
+                <p class="mana">8</p>
+            </div>
+        </div>
+
+        <div class="somespace"></div>
+
+        <div class="card_list" id="fph">
+            <div class="card">
+                <img src="test.jpg">
+                <p class="hp">13</p>
+                <p class="power">7</p>
+                <p class="mana">8</p>
+            </div>
+            <div class="card">
+                <img src="test.jpg">
+                <p class="hp">13</p>
+                <p class="power">7</p>
+                <p class="mana">8</p>
+            </div>
+            <div class="card yellowborder">
+                <img src="test.jpg">
+                <p class="hp">13</p>
+                <p class="power">7</p>
+                <p class="mana">8</p>
+            </div>
+        </div>
+
+        <div class="blockcentr">
+            <div class="player_bord">
+                <p id="fp"> You 100 hp 10 mana </p>
+                <button type="button" id="use_card">use card</button>
+                <button type="button" id="reset">reset</button>
+                <button type="button" id="next">next</button>
+            </div>
+        </div>
+
+    </body>
+</html>

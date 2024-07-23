@@ -5,15 +5,15 @@ import lombok.Data;
 
 @Data
 public class CardOnTableEntity {
-    private Card Type;
-    private int Hp;
-    private int Power;
-    private Boolean CanAttack;
+    private Card type;
+    private int hp;
+    private int power;
+    private Boolean canAttack;
 
-    public void plusHp(int Hp) {
-        this.Hp += Hp;
+    public void plusHp(int hp) {
+        this.hp += hp;
     }
-    public void plusPower(int Power) {
-        this.Power += Power;
+    public void plusPower(int power) {
+        this.power += power;
     }
 }

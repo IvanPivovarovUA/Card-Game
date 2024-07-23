@@ -10,15 +10,15 @@ import java.util.List;
 @AllArgsConstructor
 public class PlayerEntity {
 
-    private int Hp;// 0 - 25
-    private int Mana;// 0 - 10
-    private List<Card> CardsOnHand;
-    private List<CardOnTableEntity> CardsOnTable;
+    private int hp;// 0 - 25
+    private int mana;// 0 - 10
+    private List<Card> cardsOnHand;
+    private List<CardOnTableEntity> cardsOnTable;
 
-    public void plusHp(int Hp) {
-        this.Hp += Hp;
+    public void plusHp(int hp) {
+        this.hp += hp;
     }
-    public void plusMana(int Mana) {
-        this.Mana += Mana;
+    public void plusMana(int mana) {
+        this.mana += mana;
     }
 }

@@ -10,13 +10,11 @@ public class GameTableEntity {
     @Id
     public String id;
 
-    public String Test;
+    public LobbyEntity lobbyEntity;
 
-    private LobbyEntity lobbyEntity;
-
-    private Boolean IsGameContinues;
-    private Boolean IsFirstPlayerStep;
-    private PlayerEntity FirstPlayer;
-    private PlayerEntity SecondPlayer;
+    public Boolean isGameContinues;
+    public Boolean isFirstPlayerStep;
+    public PlayerEntity firstPlayer;
+    public PlayerEntity secondPlayer;
 
 }
