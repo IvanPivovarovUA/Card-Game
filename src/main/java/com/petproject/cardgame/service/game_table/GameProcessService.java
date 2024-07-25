@@ -1,16 +1,11 @@
-package com.petproject.cardgame.service;
+package com.petproject.cardgame.service.game_table;
 
 import com.petproject.cardgame.entity.CardOnTableEntity;
 import com.petproject.cardgame.entity.GameTableEntity;
 import com.petproject.cardgame.entity.LobbyEntity;
-import com.petproject.cardgame.entity.PlayerEntity;
-import com.petproject.cardgame.model.Card;
-import com.petproject.cardgame.model.UseCardModel;
 import com.petproject.cardgame.repository.GameTableRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class GameProcessService {
@@ -18,9 +13,12 @@ public class GameProcessService {
     @Autowired
     GameTableRepository gameTableRepository;
 
+    @Autowired
+    CardService cardService;
+
     public boolean isUserHaveExec(String UserId) {
         GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();
-        LobbyEntity lobbyEntity = gameTableEntity.getLobbyEntity();
+        LobbyEntity lobbyEntity = gameTableEntity.getLobby();
 
         if (
                 lobbyEntity.getFirstPlayerId().equals(UserId)
@@ -59,5 +57,7 @@ public class GameProcessService {
             }
         }
         gameTableRepository.save(gameTableEntity);
+
+        cardService.addCardInHand();
     }
 }

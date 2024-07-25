@@ -28,16 +28,14 @@ public class LobbyController {
     @GetMapping("/lobby")
     public String getLobbyPage(Principal principal) {
 
-        if (
-                !lobbyService.isUserInGame(principal.getName())
-                && !lobbyService.isUserInLobby(principal.getName())
-        ) {
+        if (lobbyService.isUserInGame(principal.getName())) {
+            return "redirect:game_table";
+        }
+        else if (lobbyService.isUserInLobby(principal.getName())) {
+            return "redirect:";
+        } else {
             return "lobby";
         }
-        else {
-            return "redirect:";
-        }
-
 
     }
 
@@ -47,7 +45,6 @@ public class LobbyController {
     }
 
     @MessageMapping("/start")
-//    @SendTo("/topic/greetings")
     public void startGame() {
         lobbyService.startGame();
         sendLobbyInfo();
@@ -74,7 +71,7 @@ public class LobbyController {
     public void sendLobbyInfo() {
         template.convertAndSend(
                 "/topic/user_list",
-                lobbyService.getGameTable().getLobbyEntity()
+                lobbyService.getGameTable().getLobby()
         );
     }
 }

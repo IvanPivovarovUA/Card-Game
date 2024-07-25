@@ -10,10 +10,13 @@ public class GameTableEntity {
     @Id
     public String id;
 
-    public LobbyEntity lobbyEntity;
+    public LobbyEntity lobby;
 
     public Boolean isGameContinues;
     public Boolean isFirstPlayerStep;
+
+    public HoverEntity hover;
+
     public PlayerEntity firstPlayer;
     public PlayerEntity secondPlayer;
 

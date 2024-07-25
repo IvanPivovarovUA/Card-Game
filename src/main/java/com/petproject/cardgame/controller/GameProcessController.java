@@ -1,8 +1,8 @@
 package com.petproject.cardgame.controller;
 
-import com.petproject.cardgame.model.UseCardModel;
-import com.petproject.cardgame.service.CardService;
-import com.petproject.cardgame.service.GameProcessService;
+import com.petproject.cardgame.model.UserHoverCardModel;
+import com.petproject.cardgame.service.game_table.CardService;
+import com.petproject.cardgame.service.game_table.GameProcessService;
 import com.petproject.cardgame.service.LobbyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -54,31 +54,37 @@ public class GameProcessController {
     public void next(Principal principal) {
         if (gameProcessService.isUserHaveExec(principal.getName())) {
             gameProcessService.nextPlayerStep();
-            cardService.addCardInHand();
             sendGameTableInfo();
         }
     }
 
-    @MessageMapping("/put_card")
-    public void useCard(Principal principal, UseCardModel useCardModel) {
-        if (gameProcessService.isUserHaveExec(principal.getName())) {
-            cardService.putCard(useCardModel.getMainCardId(), useCardModel.getWorkCardId());
-            sendGameTableInfo();
-        }
+    @MessageMapping("/hover")
+    public void hoverCard(Principal principal, UserHoverCardModel userHoverCardModel) {
+
     }
 
-    @MessageMapping("/card_attack")
-    public void cardAttack(Principal principal, UseCardModel useCardModel) {
-        if (gameProcessService.isUserHaveExec(principal.getName())) {
-            if (useCardModel.getWorkCardId() != null) {
-                cardService.cardAttack(useCardModel.getMainCardId(), useCardModel.getWorkCardId());
-            }
-            else {
-                cardService.playerAttack(useCardModel.getMainCardId());
-            }
-            sendGameTableInfo();
-        }
-    }
+
+
+//    @MessageMapping("/put_card")
+//    public void useCard(Principal principal, UseCardModel useCardModel) {
+//        if (gameProcessService.isUserHaveExec(principal.getName())) {
+//            cardService.putCard(useCardModel.getMainCardId(), useCardModel.getWorkCardId());
+//            sendGameTableInfo();
+//        }
+//    }
+//
+//    @MessageMapping("/card_attack")
+//    public void cardAttack(Principal principal, UseCardModel useCardModel) {
+//        if (gameProcessService.isUserHaveExec(principal.getName())) {
+//            if (useCardModel.getWorkCardId() != null) {
+//                cardService.cardAttack(useCardModel.getMainCardId(), useCardModel.getWorkCardId());
+//            }
+//            else {
+//                cardService.playerAttack(useCardModel.getMainCardId());
+//            }
+//            sendGameTableInfo();
+//        }
+//    }
 
 
 

@@ -1,6 +1,3 @@
-body {
-    background: #009900;
-}
 
 
 
@@ -10,27 +7,31 @@ body {
 
     display: flex;
     justify-content: center;
-    background:  #EBBF11;
+
 
     padding: 10px;
     margin: 10px;
 }
+
+
 .player_bord button {
 
     margin-left: 10px;
 }
 
-.blockcentr {
+.block_centre {
     display: flex;
     justify-content: center;
     align-items: center;
 
 }
 
+
 .card_list {
     display: flex;
-    justify-content: center;
-    height: 110px;
+    justify-content: left;
+    height: 160px;
+    overflow:auto;
 }
 
 .card {
@@ -38,7 +39,6 @@ body {
     width: 70px;
     height: 100px;
     margin: 10px;
-
 
 }
 
@@ -87,9 +87,8 @@ body {
      border: 5px solid red;
      margin: 5px;
 }
-
-.yellowborder {
-     border: 5px solid #EBBF11;
+.greenborder {
+     border: 5px solid green;
      margin: 5px;
 }
 .blueborder {
@@ -97,6 +96,13 @@ body {
      margin: 5px;
 }
 
+.yellowback {
+    background: #EBBF11;
+}
+
+.greenback {
+    background: green;
+}
 
 .timer {
     display: inline-block;

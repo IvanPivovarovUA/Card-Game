@@ -1,4 +1,4 @@
-package com.petproject.cardgame.service;
+package com.petproject.cardgame.service.game_table;
 
 import com.petproject.cardgame.entity.CardOnTableEntity;
 import com.petproject.cardgame.entity.GameTableEntity;
@@ -83,49 +83,51 @@ public class CardService {
 
         if (MainP.getMana() >= card.getMana()) {
             MainP.plusMana(-card.getMana());
-            switch (card) {
-                case Card.H:
-                    MainP
-                            .getCardsOnTable()
-                            .get(WorkCardId.get())
-                            .plusHp(Card.H.getHp());
-                    break;
-                case Card.P:
-                    MainP
-                            .getCardsOnTable()
-                            .get(WorkCardId.get())
-                            .plusPower(Card.P.getPower());
-                    break;
-                case Card.T:
-                    WorkP
-                            .getCardsOnTable()
-                            .get(WorkCardId.get())
-                            .plusPower(-Card.T.getPower());
-                    break;
-                case Card.F:
-                    for (CardOnTableEntity cardOnTableEntity : MainP.getCardsOnTable()) {
-                        cardOnTableEntity.plusHp(-card.getPower());
-                    }
-                    for (CardOnTableEntity cardOnTableEntity : WorkP.getCardsOnTable()) {
-                        cardOnTableEntity.plusHp(-card.getPower());
-                    }
-                    break;
-                case Card.A:
-                    for (CardOnTableEntity cardOnTableEntity : WorkP.getCardsOnTable()) {
-                        cardOnTableEntity.plusHp(-card.getPower());
-                    }
-                    break;
-                default:
-                    MainP.getCardsOnTable().add(putCardOnTable(card));
-                    break;
-            }
+            MainP.getCardsOnTable().add(putCardOnTable(card));
+
+//            switch (card) {
+//                case Card.H:
+//                    MainP
+//                            .getCardsOnTable()
+//                            .get(WorkCardId.get())
+//                            .plusHp(Card.H.getHp());
+//                    break;
+//                case Card.P:
+//                    MainP
+//                            .getCardsOnTable()
+//                            .get(WorkCardId.get())
+//                            .plusPower(Card.P.getPower());
+//                    break;
+//                case Card.T:
+//                    WorkP
+//                            .getCardsOnTable()
+//                            .get(WorkCardId.get())
+//                            .plusPower(-Card.T.getPower());
+//                    break;
+//                case Card.F:
+//                    for (CardOnTableEntity cardOnTableEntity : MainP.getCardsOnTable()) {
+//                        cardOnTableEntity.plusHp(-card.getPower());
+//                    }
+//                    for (CardOnTableEntity cardOnTableEntity : WorkP.getCardsOnTable()) {
+//                        cardOnTableEntity.plusHp(-card.getPower());
+//                    }
+//                    break;
+//                case Card.A:
+//                    for (CardOnTableEntity cardOnTableEntity : WorkP.getCardsOnTable()) {
+//                        cardOnTableEntity.plusHp(-card.getPower());
+//                    }
+//                    break;
+//                default:
+//                    MainP.getCardsOnTable().add(putCardOnTable(card));
+//                    break;
+//            }
 
         }
 
         gameTableRepository.save(gameTableEntity);
     }
 
-    public void cardAttack(Integer MainCardId, Integer WorkCardId) {
+    public void attackCard(Integer MainCardId, Integer WorkCardId) {
         GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();
 
         CardOnTableEntity MainC;
@@ -160,7 +162,7 @@ public class CardService {
         gameTableRepository.save(gameTableEntity);
     }
 
-    public void playerAttack(Integer MainCardId) {
+    public void attackPlayer(Integer MainCardId) {
         GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();
 
         CardOnTableEntity MainC;
