@@ -5,7 +5,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
-@Document("gametable")
+@Document("game_table")
 public class GameTableEntity {
     @Id
     public String id;

@@ -16,6 +16,20 @@ public class GameProcessService {
     @Autowired
     CardService cardService;
 
+
+    public String getFirstPlayerId() {
+        GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();
+        return gameTableEntity.getLobby().getFirstPlayerId();
+    }
+
+    public String getSecondPlayerId() {
+        GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();
+        return gameTableEntity.getLobby().getSecondPlayerId();
+    }
+
+
+
+
     public boolean isUserHaveExec(String UserId) {
         GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();
         LobbyEntity lobbyEntity = gameTableEntity.getLobby();

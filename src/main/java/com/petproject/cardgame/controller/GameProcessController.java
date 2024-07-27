@@ -1,16 +1,22 @@
 package com.petproject.cardgame.controller;
 
+import com.petproject.cardgame.mapper.GameTableMapper;
+import com.petproject.cardgame.model.InfoForPlayer;
 import com.petproject.cardgame.model.UserHoverCardModel;
 import com.petproject.cardgame.service.game_table.CardService;
 import com.petproject.cardgame.service.game_table.GameProcessService;
 import com.petproject.cardgame.service.LobbyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.security.Principal;
+
+import static com.petproject.cardgame.mapper.GameTableMapper.GameTableToInfoForPlayer;
 
 @Controller
 public class GameProcessController {
@@ -23,6 +29,7 @@ public class GameProcessController {
 
     @Autowired
     private CardService cardService;
+
 
     @Autowired
     private SimpMessagingTemplate template;
@@ -38,16 +45,32 @@ public class GameProcessController {
     }
 
     @MessageMapping("/get_game_table_info")
+    @SendToUser("/queue/game_table_info")
     public void addUserInLobby(Principal principal) {
         sendGameTableInfo();
     }
 
     public void sendGameTableInfo() {
-        template.convertAndSend(
-                "/topic/game_table_info",
-                lobbyService.getGameTable()
+
+        template.convertAndSendToUser(
+                gameProcessService.getFirstPlayerId(),
+                "/queue/game_table_info",
+
+                GameTableToInfoForPlayer(
+                        lobbyService.getGameTable(),
+                        true
+                )
         );
 
+        template.convertAndSendToUser(
+                gameProcessService.getSecondPlayerId(),
+                "/queue/game_table_info",
+
+                GameTableToInfoForPlayer(
+                        lobbyService.getGameTable(),
+                        false
+                )
+        );
     }
 
     @MessageMapping("/next")

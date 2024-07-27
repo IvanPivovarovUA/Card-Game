@@ -3,12 +3,12 @@
 <head>
     <title>Page Title</title>
 <!--    <link rel="stylesheet" href="../static/game_table.css">-->
-    <link rel="stylesheet" href="game_table.css">
+    <link rel="stylesheet" href="/game_table.css">
 
 
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
-    <script src="game_table.js"></script>
+    <script src="/game_table.js"></script>
 
 
 </head>
@@ -16,12 +16,12 @@
         <div class="timer yellowback">23s</div>
 
         <div class="block_centre">
-    <div id="sp" class="player_bord yellowback">
-            fdhfdghfgdh
-    </div>
-</div>
+            <div id="enemy" class="player_bord yellowback">
+                    fdhfdghfgdh
+            </div>
+        </div>
 
-        <div class="card_list" id="sph">
+        <div class="card_list" id="eh">
             <div class="card redborder">
                 <img src="test.jpg">
                 <p class="hp">13</p>
@@ -44,7 +44,7 @@
 
         <div class="somespace"></div>
 
-        <div class="card_list" id="spt">
+        <div class="card_list" id="et">
             <div class="card card_enemy">
                 <img src="test.jpg">
                 <p class="hp">13</p>
@@ -64,8 +64,7 @@
                 <p class="mana">8</p>
             </div>
         </div>
-
-        <div class="card_list" id="fpt">
+        <div class="card_list" id="yt">
             <div class="card card_in_table blueborder">
                 <img src="test.jpg">
                 <p class="hp">13</p>
@@ -142,7 +141,7 @@
 
         <div class="somespace"></div>
 
-        <div class="card_list" id="fph">
+        <div class="card_list" id="yh">
             <div class="card">
                 <img src="test.jpg">
                 <p class="hp">13</p>
@@ -163,9 +162,10 @@
             </div>
         </div>
 
+
         <div class="block_centre">
-            <div class="player_bord greenback">
-                <p id="fp"> You 100 hp 10 mana </p>
+            <div id="you" class="player_bord greenback">
+<!--                <p id="you"> You 100 hp 10 mana </p>-->
                 <button type="button" id="use_card">use card</button>
                 <button type="button" id="reset">reset</button>
                 <button type="button" id="next">next</button>
