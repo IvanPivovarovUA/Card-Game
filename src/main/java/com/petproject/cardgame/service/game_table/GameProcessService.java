@@ -13,9 +13,6 @@ public class GameProcessService {
     @Autowired
     GameTableRepository gameTableRepository;
 
-    @Autowired
-    CardService cardService;
-
 
     public String getFirstPlayerId() {
         GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();
@@ -26,8 +23,6 @@ public class GameProcessService {
         GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();
         return gameTableEntity.getLobby().getSecondPlayerId();
     }
-
-
 
 
     public boolean isUserHaveExec(String UserId) {
@@ -55,6 +50,7 @@ public class GameProcessService {
         GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();
 
         if (gameTableEntity.getIsFirstPlayerStep()) {
+
             gameTableEntity.setIsFirstPlayerStep(false);
             gameTableEntity.getSecondPlayer().setMana(10);
 
@@ -66,12 +62,11 @@ public class GameProcessService {
             gameTableEntity.setIsFirstPlayerStep(true);
             gameTableEntity.getFirstPlayer().setMana(10);
 
-            for (CardOnTableEntity cardOnTableEntity : gameTableEntity.getSecondPlayer().getCardsOnTable()) {
+            for (CardOnTableEntity cardOnTableEntity : gameTableEntity.getFirstPlayer().getCardsOnTable()) {
                 cardOnTableEntity.setCanAttack(true);
             }
         }
         gameTableRepository.save(gameTableEntity);
 
-        cardService.addCardInHand();
     }
 }

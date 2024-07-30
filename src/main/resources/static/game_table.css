@@ -3,7 +3,7 @@
 
 
 .player_bord {
-    width: 400px;
+    width: 600px;
 
     display: flex;
     justify-content: center;
@@ -11,6 +11,9 @@
 
     padding: 10px;
     margin: 10px;
+}
+.player_bord p {
+    margin-left: 10px;
 }
 
 
@@ -69,6 +72,7 @@
 
 .mana {
     background: blue;
+    color: white;
 
     padding:5px;
     position: absolute;
@@ -102,6 +106,18 @@
 
 .greenback {
     background: green;
+}
+
+.redback {
+    background: red;
+    color:white;
+    padding:10px;
+}
+
+.blueback {
+    background: blue;
+    color:white;
+    padding:10px;
 }
 
 .timer {

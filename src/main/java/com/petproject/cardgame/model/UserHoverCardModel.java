@@ -1,6 +1,9 @@
 package com.petproject.cardgame.model;
 
+import lombok.Data;
+
+@Data
 public class UserHoverCardModel {
-    Integer index;
-    Character place;
+    public Integer index;
+    public Character place;
 }

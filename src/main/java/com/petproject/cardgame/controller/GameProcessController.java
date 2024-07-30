@@ -1,14 +1,12 @@
 package com.petproject.cardgame.controller;
 
-import com.petproject.cardgame.mapper.GameTableMapper;
-import com.petproject.cardgame.model.InfoForPlayer;
 import com.petproject.cardgame.model.UserHoverCardModel;
-import com.petproject.cardgame.service.game_table.CardService;
+import com.petproject.cardgame.service.game_table.CardHoverService;
+import com.petproject.cardgame.service.game_table.UseCardService;
 import com.petproject.cardgame.service.game_table.GameProcessService;
 import com.petproject.cardgame.service.LobbyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
@@ -28,8 +26,10 @@ public class GameProcessController {
     private GameProcessService gameProcessService;
 
     @Autowired
-    private CardService cardService;
+    private UseCardService useCardService;
 
+    @Autowired
+    private CardHoverService cardHoverService;
 
     @Autowired
     private SimpMessagingTemplate template;
@@ -46,7 +46,7 @@ public class GameProcessController {
 
     @MessageMapping("/get_game_table_info")
     @SendToUser("/queue/game_table_info")
-    public void addUserInLobby(Principal principal) {
+    public void addUserInLobby() {
         sendGameTableInfo();
     }
 
@@ -77,15 +77,62 @@ public class GameProcessController {
     public void next(Principal principal) {
         if (gameProcessService.isUserHaveExec(principal.getName())) {
             gameProcessService.nextPlayerStep();
+            useCardService.addCardInHand();
+            cardHoverService.reset();
             sendGameTableInfo();
         }
     }
 
     @MessageMapping("/hover")
     public void hoverCard(Principal principal, UserHoverCardModel userHoverCardModel) {
-
+        if (gameProcessService.isUserHaveExec(principal.getName())) {
+            cardHoverService.hover(
+                    userHoverCardModel.getIndex(),
+                    userHoverCardModel.getPlace()
+            );
+            sendGameTableInfo();
+        }
     }
 
+    @MessageMapping("/reset")
+    public void resetHover(Principal principal) {
+        if (gameProcessService.isUserHaveExec(principal.getName())) {
+            cardHoverService.reset();
+            sendGameTableInfo();
+        }
+    }
+
+    @MessageMapping("/use_card")
+    public void useCard(Principal principal) {
+
+        if (gameProcessService.isUserHaveExec(principal.getName())) {
+            Integer index;
+
+            Integer index2;
+            Boolean index3;
+
+            index = cardHoverService.getHover().getHand();
+            if (index != -1) {
+                useCardService.putCardOnTable(index);
+            }
+
+            index = cardHoverService.getHover().getTable();
+            if (index != -1) {
+                index2 = cardHoverService.getHover().getEnemy();
+                if (index2 != -1) {
+                    useCardService.attackCard(index, index2);
+                }
+
+                index3 = cardHoverService.getHover().getPlayer();
+                if (index3) {
+                    useCardService.attackPlayer(index);
+                }
+            }
+
+            cardHoverService.reset();
+            sendGameTableInfo();
+        }
+    }
 
 
 //    @MessageMapping("/put_card")

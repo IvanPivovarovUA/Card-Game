@@ -1,20 +1,17 @@
 package com.petproject.cardgame.model;
 
 import com.petproject.cardgame.entity.CardOnTableEntity;
+import com.petproject.cardgame.entity.HoverEntity;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
 public class InfoForPlayer {
-    public List<Card> yourHand;
-    public List<CardOnTableEntity> yourTable;
-
-    public List<CardOnTableEntity>  enemyTable;
-    public Integer enemyHand;
-
+    public YourInfo yourInfo;
+    public EnemyInfo enemyInfo;
     public Boolean isYourStep;
+    public HoverEntity hover;
 
-    public String yourNickname;
-    public String enemyNickname;
+    public CardStats cardStats;
 }

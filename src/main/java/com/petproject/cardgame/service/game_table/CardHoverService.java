@@ -12,6 +12,10 @@ public class CardHoverService {
     @Autowired
     GameTableRepository gameTableRepository;
 
+    public HoverEntity getHover() {
+        return gameTableRepository.findById("1").get().getHover();
+    }
+
     public void hover(Integer index, Character place) {
         GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();
         place = Character.toUpperCase(place);
@@ -30,20 +34,22 @@ public class CardHoverService {
         if (place.equals('E')) {
 
             if (
-                    gameTableEntity.getHover().getTable() != -1
+                    gameTableEntity.getHover().getHand() == -1
+                    && gameTableEntity.getHover().getTable() != -1
             ) {
-                gameTableEntity.getHover().setTable(index);
+                gameTableEntity.getHover().setEnemy(index);
                 gameTableEntity.getHover().setPlayer(false);
             }
 
         }
 
-        if (place.equals('p')) {
+        if (place.equals('P')) {
 
             if (
-                    gameTableEntity.getHover().getTable() != -1
+                    gameTableEntity.getHover().getHand() == -1
+                    && gameTableEntity.getHover().getTable() != -1
             ) {
-                gameTableEntity.getHover().setTable(-1);
+                gameTableEntity.getHover().setEnemy(-1);
                 gameTableEntity.getHover().setPlayer(true);
             }
 

@@ -8,10 +8,11 @@ import com.petproject.cardgame.repository.GameTableRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
-public class CardService {
+public class UseCardService {
 
     @Autowired
     GameTableRepository gameTableRepository;
@@ -35,7 +36,7 @@ public class CardService {
     }
 
 
-    private CardOnTableEntity putCardOnTable(Card card) {
+    private CardOnTableEntity createCardOnTable(Card card) {
         CardOnTableEntity cardOnTableEntity = new CardOnTableEntity();
 
         cardOnTableEntity.setType(card);
@@ -56,89 +57,66 @@ public class CardService {
         return cardOnTableEntity;
     }
 
-
-    public void putCard(Integer CardId, Integer WorkCardId) {
-        if (WorkCardId != null) {
-            putCard(CardId,Optional.of(WorkCardId));
-        }
-        else {
-            putCard(CardId,Optional.empty());
-        }
-    }
-
-    public void putCard(Integer MainCardId, Optional<Integer> WorkCardId) {
+    public void putCardOnTable(int index) {
         GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();
-        PlayerEntity MainP;
-        PlayerEntity WorkP;
+
         if (gameTableEntity.getIsFirstPlayerStep()) {
-            MainP = gameTableEntity.getFirstPlayer();
-            WorkP = gameTableEntity.getSecondPlayer();
+            if (gameTableEntity.getFirstPlayer().getCardsOnHand().get(index).getMana() <= gameTableEntity.getFirstPlayer().getMana()) {
+                gameTableEntity.getFirstPlayer().getCardsOnTable().add(
+                        createCardOnTable(
+                                gameTableEntity.getFirstPlayer().getCardsOnHand().get(index)
+                        )
+                );
+
+                gameTableEntity.getFirstPlayer().plusMana(
+                        -gameTableEntity.getFirstPlayer().getCardsOnHand().get(index).getMana()
+                );
+
+                gameTableEntity.getFirstPlayer().getCardsOnHand().remove(index);
+            }
+
+
         }
         else {
-            MainP = gameTableEntity.getSecondPlayer();
-            WorkP = gameTableEntity.getFirstPlayer();
-        }
+            if (gameTableEntity.getSecondPlayer().getCardsOnHand().get(index).getMana() <= gameTableEntity.getSecondPlayer().getMana()) {
+                gameTableEntity.getSecondPlayer().getCardsOnTable().add(
+                        createCardOnTable(
+                                gameTableEntity.getSecondPlayer().getCardsOnHand().get(index)
+                        )
+                );
 
-        Card card = MainP.getCardsOnHand().get(MainCardId);
+                gameTableEntity.getSecondPlayer().plusMana(
+                        -gameTableEntity.getSecondPlayer().getCardsOnHand().get(index).getMana()
+                );
 
-        if (MainP.getMana() >= card.getMana()) {
-            MainP.plusMana(-card.getMana());
-            MainP.getCardsOnTable().add(putCardOnTable(card));
-
-//            switch (card) {
-//                case Card.H:
-//                    MainP
-//                            .getCardsOnTable()
-//                            .get(WorkCardId.get())
-//                            .plusHp(Card.H.getHp());
-//                    break;
-//                case Card.P:
-//                    MainP
-//                            .getCardsOnTable()
-//                            .get(WorkCardId.get())
-//                            .plusPower(Card.P.getPower());
-//                    break;
-//                case Card.T:
-//                    WorkP
-//                            .getCardsOnTable()
-//                            .get(WorkCardId.get())
-//                            .plusPower(-Card.T.getPower());
-//                    break;
-//                case Card.F:
-//                    for (CardOnTableEntity cardOnTableEntity : MainP.getCardsOnTable()) {
-//                        cardOnTableEntity.plusHp(-card.getPower());
-//                    }
-//                    for (CardOnTableEntity cardOnTableEntity : WorkP.getCardsOnTable()) {
-//                        cardOnTableEntity.plusHp(-card.getPower());
-//                    }
-//                    break;
-//                case Card.A:
-//                    for (CardOnTableEntity cardOnTableEntity : WorkP.getCardsOnTable()) {
-//                        cardOnTableEntity.plusHp(-card.getPower());
-//                    }
-//                    break;
-//                default:
-//                    MainP.getCardsOnTable().add(putCardOnTable(card));
-//                    break;
-//            }
-
+                gameTableEntity.getSecondPlayer().getCardsOnHand().remove(index);
+            }
         }
 
         gameTableRepository.save(gameTableEntity);
+
     }
 
-    public void attackCard(Integer MainCardId, Integer WorkCardId) {
+
+    public void attackCard(int MainCardId, int WorkCardId) {
         GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();
 
         CardOnTableEntity MainC;
         CardOnTableEntity WorkC;
+        List<CardOnTableEntity> MainCList;
+        List<CardOnTableEntity> WorkCList;
+
         if (gameTableEntity.getIsFirstPlayerStep()) {
             MainC = gameTableEntity.getFirstPlayer().getCardsOnTable().get(MainCardId);
-            WorkC = gameTableEntity.getSecondPlayer().getCardsOnTable().get(MainCardId);
+            WorkC = gameTableEntity.getSecondPlayer().getCardsOnTable().get(WorkCardId);
+            MainCList = gameTableEntity.getFirstPlayer().getCardsOnTable();
+            WorkCList = gameTableEntity.getSecondPlayer().getCardsOnTable();
         }
         else {
             MainC = gameTableEntity.getSecondPlayer().getCardsOnTable().get(WorkCardId);
             WorkC = gameTableEntity.getFirstPlayer().getCardsOnTable().get(MainCardId);
+            MainCList = gameTableEntity.getSecondPlayer().getCardsOnTable();
+            WorkCList = gameTableEntity.getFirstPlayer().getCardsOnTable();
         }
 
         if (MainC.getCanAttack()) {
@@ -152,17 +130,17 @@ public class CardService {
             MainC.setCanAttack(false);
 
             if (MainC.getHp() <= 0) {
-                gameTableEntity.getFirstPlayer().getCardsOnTable().remove(MainCardId);
+                MainCList.remove(MainCardId);
             }
             if (WorkC.getHp() <= 0) {
-                gameTableEntity.getFirstPlayer().getCardsOnTable().remove(WorkCardId);
+                WorkCList.remove(WorkCardId);
             }
         }
 
         gameTableRepository.save(gameTableEntity);
     }
 
-    public void attackPlayer(Integer MainCardId) {
+    public void attackPlayer(int MainCardId) {
         GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();
 
         CardOnTableEntity MainC;
@@ -183,7 +161,7 @@ public class CardService {
             MainC.setCanAttack(false);
 
             if (WorkP.getHp() <= 0) {
-                //end
+                System.out.println("end!!!!!");
             }
         }
 

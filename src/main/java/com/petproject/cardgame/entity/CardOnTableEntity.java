@@ -1,7 +1,9 @@
 package com.petproject.cardgame.entity;
 
 import com.petproject.cardgame.model.Card;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 public class CardOnTableEntity {

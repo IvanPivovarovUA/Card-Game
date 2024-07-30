@@ -1,13 +1,10 @@
 package com.petproject.cardgame.service;
 
-import com.petproject.cardgame.entity.GameTableEntity;
-import com.petproject.cardgame.entity.LobbyEntity;
-import com.petproject.cardgame.entity.PlayerEntity;
+import com.petproject.cardgame.entity.*;
 import com.petproject.cardgame.repository.GameTableRepository;
-import com.petproject.cardgame.service.game_table.CardService;
+import com.petproject.cardgame.service.game_table.UseCardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.petproject.cardgame.entity.CardOnTableEntity;
 import com.petproject.cardgame.model.Card;
 
 import java.util.ArrayList;
@@ -22,7 +19,7 @@ public class LobbyService {
     private GameTableRepository gameTableRepository;
 
     @Autowired
-    private CardService cardService;
+    private UseCardService useCardService;
 
     //override
     public GameTableEntity getGameTable() {
@@ -37,6 +34,10 @@ public class LobbyService {
             LobbyEntity lobbyEntity = new LobbyEntity();
             lobbyEntity.setWantToPlayUsers(new ArrayList<>());
             gameTableEntity.setLobby(lobbyEntity);
+
+
+            HoverEntity hoverEntity = new HoverEntity();
+            gameTableEntity.setHover(hoverEntity);
 
             gameTableRepository.save(gameTableEntity);
 
@@ -142,11 +143,11 @@ public class LobbyService {
 
 
             for (int i = 0; i < 5; i++) {
-                cardService.addCardInHand(true);
+                useCardService.addCardInHand(true);
             }
 
             for (int i = 0; i < 5; i++) {
-                cardService.addCardInHand(false);
+                useCardService.addCardInHand(false);
             }
 
         }

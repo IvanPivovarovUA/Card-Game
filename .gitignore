@@ -35,3 +35,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### my text
+src/main/resources/static/
