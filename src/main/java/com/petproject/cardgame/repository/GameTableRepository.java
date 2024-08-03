@@ -13,4 +13,6 @@ public interface GameTableRepository extends MongoRepository<GameTableEntity, St
     @Override
     Optional<GameTableEntity> findById(String Id);
 
+
+
 }

@@ -1,12 +1,13 @@
 package com.petproject.cardgame.model;
 
-public class CardStats {
+public class CardDto {
     public String type;
     public int mana;
     public int hp;
     public int power;
+//    public boolean isEnoughMana;
 
-    public CardStats(Card card) {
+    public CardDto(Card card) {
         this.type = card.name();
         this.mana = card.getMana();
         this.hp = card.getHp();

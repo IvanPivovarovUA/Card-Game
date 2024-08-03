@@ -4,8 +4,15 @@ import lombok.Data;
 
 @Data
 public class HoverEntity {
-    Integer hand = -1;
-    Integer table = -1;
-    Integer enemy = -1;
-    Boolean player = false;
+    Integer hand;
+    Integer table;
+    Integer enemy;
+    Boolean player;
+
+    public HoverEntity() {
+        this.hand = -1;
+        this.table = -1;
+        this.enemy = -1;
+        this.player = false;
+    }
 }

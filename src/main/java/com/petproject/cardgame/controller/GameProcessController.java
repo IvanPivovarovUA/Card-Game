@@ -1,9 +1,9 @@
 package com.petproject.cardgame.controller;
 
 import com.petproject.cardgame.model.UserHoverCardModel;
-import com.petproject.cardgame.service.game_table.CardHoverService;
-import com.petproject.cardgame.service.game_table.UseCardService;
-import com.petproject.cardgame.service.game_table.GameProcessService;
+import com.petproject.cardgame.service.game_process.CardHoverService;
+import com.petproject.cardgame.service.game_process.UseCardService;
+import com.petproject.cardgame.service.game_process.GameProcessService;
 import com.petproject.cardgame.service.LobbyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -45,7 +45,7 @@ public class GameProcessController {
     }
 
     @MessageMapping("/get_game_table_info")
-    @SendToUser("/queue/game_table_info")
+//    @SendToUser("/queue/game_table_info")
     public void addUserInLobby() {
         sendGameTableInfo();
     }
@@ -133,29 +133,4 @@ public class GameProcessController {
             sendGameTableInfo();
         }
     }
-
-
-//    @MessageMapping("/put_card")
-//    public void useCard(Principal principal, UseCardModel useCardModel) {
-//        if (gameProcessService.isUserHaveExec(principal.getName())) {
-//            cardService.putCard(useCardModel.getMainCardId(), useCardModel.getWorkCardId());
-//            sendGameTableInfo();
-//        }
-//    }
-//
-//    @MessageMapping("/card_attack")
-//    public void cardAttack(Principal principal, UseCardModel useCardModel) {
-//        if (gameProcessService.isUserHaveExec(principal.getName())) {
-//            if (useCardModel.getWorkCardId() != null) {
-//                cardService.cardAttack(useCardModel.getMainCardId(), useCardModel.getWorkCardId());
-//            }
-//            else {
-//                cardService.playerAttack(useCardModel.getMainCardId());
-//            }
-//            sendGameTableInfo();
-//        }
-//    }
-
-
-
 }

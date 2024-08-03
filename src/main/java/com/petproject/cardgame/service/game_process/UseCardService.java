@@ -1,4 +1,4 @@
-package com.petproject.cardgame.service.game_table;
+package com.petproject.cardgame.service.game_process;
 
 import com.petproject.cardgame.entity.CardOnTableEntity;
 import com.petproject.cardgame.entity.GameTableEntity;
@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UseCardService {
@@ -60,37 +59,26 @@ public class UseCardService {
     public void putCardOnTable(int index) {
         GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();
 
+        PlayerEntity MainP;
         if (gameTableEntity.getIsFirstPlayerStep()) {
-            if (gameTableEntity.getFirstPlayer().getCardsOnHand().get(index).getMana() <= gameTableEntity.getFirstPlayer().getMana()) {
-                gameTableEntity.getFirstPlayer().getCardsOnTable().add(
-                        createCardOnTable(
-                                gameTableEntity.getFirstPlayer().getCardsOnHand().get(index)
-                        )
-                );
-
-                gameTableEntity.getFirstPlayer().plusMana(
-                        -gameTableEntity.getFirstPlayer().getCardsOnHand().get(index).getMana()
-                );
-
-                gameTableEntity.getFirstPlayer().getCardsOnHand().remove(index);
-            }
-
-
+            MainP = gameTableEntity.getFirstPlayer();
         }
         else {
-            if (gameTableEntity.getSecondPlayer().getCardsOnHand().get(index).getMana() <= gameTableEntity.getSecondPlayer().getMana()) {
-                gameTableEntity.getSecondPlayer().getCardsOnTable().add(
-                        createCardOnTable(
-                                gameTableEntity.getSecondPlayer().getCardsOnHand().get(index)
-                        )
-                );
+            MainP = gameTableEntity.getSecondPlayer();
+        }
 
-                gameTableEntity.getSecondPlayer().plusMana(
-                        -gameTableEntity.getSecondPlayer().getCardsOnHand().get(index).getMana()
-                );
+        if (MainP.getCardsOnHand().get(index).getMana() <= MainP.getMana()) {
+            MainP.getCardsOnTable().add(
+                    createCardOnTable(
+                            MainP.getCardsOnHand().get(index)
+                    )
+            );
 
-                gameTableEntity.getSecondPlayer().getCardsOnHand().remove(index);
-            }
+            MainP.plusMana(
+                    -MainP.getCardsOnHand().get(index).getMana()
+            );
+
+            MainP.getCardsOnHand().remove(index);
         }
 
         gameTableRepository.save(gameTableEntity);
@@ -113,8 +101,8 @@ public class UseCardService {
             WorkCList = gameTableEntity.getSecondPlayer().getCardsOnTable();
         }
         else {
-            MainC = gameTableEntity.getSecondPlayer().getCardsOnTable().get(WorkCardId);
-            WorkC = gameTableEntity.getFirstPlayer().getCardsOnTable().get(MainCardId);
+            MainC = gameTableEntity.getSecondPlayer().getCardsOnTable().get(MainCardId);
+            WorkC = gameTableEntity.getFirstPlayer().getCardsOnTable().get(WorkCardId);
             MainCList = gameTableEntity.getSecondPlayer().getCardsOnTable();
             WorkCList = gameTableEntity.getFirstPlayer().getCardsOnTable();
         }

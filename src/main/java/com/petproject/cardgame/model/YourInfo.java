@@ -8,7 +8,7 @@ import java.util.List;
 @Data
 public class YourInfo {
 
-    public List<CardStats> hand;
+    public List<CardDto> hand;
     public List<CardOnTableEntity> table;
 
     public String nickname;

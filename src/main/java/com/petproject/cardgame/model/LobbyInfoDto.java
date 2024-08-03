@@ -1,16 +1,14 @@
-package com.petproject.cardgame.entity;
+package com.petproject.cardgame.model;
 
 import lombok.Data;
 
 import java.util.List;
 
 @Data
-public class LobbyEntity {
+public class LobbyInfoDto {
 
     public String winner;
-
     public String firstPlayerId;
     public String secondPlayerId;
-
-    public List<String> wantToPlayUsers;
+    public List<String> lobby;
 }

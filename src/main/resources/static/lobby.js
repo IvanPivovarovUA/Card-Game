@@ -24,7 +24,7 @@ stompClient.onStompError = (frame) => {
 
 function getUserList() {
     stompClient.publish({
-        destination: "/app/get_user_list",
+        destination: "/app/get_lobby_info",
         body: JSON.stringify()
     });
 }
@@ -38,8 +38,8 @@ function start() {
 function showGreeting(message) {
 
     $("#userlist").html("");
-    for (var user in message.wantToPlayUsers) {
-        $("#userlist").append("<li>" + message.wantToPlayUsers[user] + "</li>");
+    for (var user in message.lobby) {
+        $("#userlist").append("<li>" + message.lobby[user] + "</li>");
     }
 
     $("#f").html("<li>" + message.firstPlayerId + "</li>");

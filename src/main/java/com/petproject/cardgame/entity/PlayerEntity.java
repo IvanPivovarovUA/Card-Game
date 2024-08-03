@@ -10,6 +10,8 @@ import java.util.List;
 @AllArgsConstructor
 public class PlayerEntity {
 
+    public String id;
+
     private int hp;// 0 - 25
     private int mana;// 0 - 10
     private List<Card> cardsOnHand;

@@ -2,6 +2,7 @@ package com.petproject.cardgame.controller;
 
 import com.petproject.cardgame.repository.GameTableRepository;
 import com.petproject.cardgame.service.LobbyService;
+import com.petproject.cardgame.service.game_process.UseCardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -13,6 +14,8 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import java.security.Principal;
 
+import static com.petproject.cardgame.mapper.LobbyMapper.gametTableToLobbyInfoDto;
+
 @Controller
 public class LobbyController {
 
@@ -23,7 +26,14 @@ public class LobbyController {
     private LobbyService lobbyService;
 
     @Autowired
-    private GameTableRepository gameTableRepository;
+    private UseCardService useCardService;
+
+    public void sendLobbyInfo() {
+        template.convertAndSend(
+                "/topic/user_list",
+                gametTableToLobbyInfoDto(lobbyService.getGameTable())
+        );
+    }
 
     @GetMapping("/lobby")
     public String getLobbyPage(Principal principal) {
@@ -39,15 +49,25 @@ public class LobbyController {
 
     }
 
-    @MessageMapping("/get_user_list")
+    @MessageMapping("/get_lobby_info")
     public void addUserInLobby(Principal principal) {
          sendLobbyInfo();
     }
 
     @MessageMapping("/start")
     public void startGame() {
-        lobbyService.startGame();
-        sendLobbyInfo();
+        if (lobbyService.canIStartGame()) {
+            lobbyService.startGame();
+
+            for (int i = 0; i < 3; i++) {
+                useCardService.addCardInHand(true);
+            }
+            for (int i = 0; i < 3; i++) {
+                useCardService.addCardInHand(false);
+            }
+
+            sendLobbyInfo();
+        }
     }
 
     @EventListener
@@ -64,14 +84,6 @@ public class LobbyController {
     @EventListener
     public void userDisconnectToLobby(SessionDisconnectEvent event) {
         lobbyService.removeUserFromLobby(event.getUser().getName());
-
         sendLobbyInfo();
-    }
-
-    public void sendLobbyInfo() {
-        template.convertAndSend(
-                "/topic/user_list",
-                lobbyService.getGameTable().getLobby()
-        );
     }
 }

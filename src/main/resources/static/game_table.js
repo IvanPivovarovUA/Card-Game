@@ -82,9 +82,9 @@ function use_card() {
 }
 
 ////////////////////////
-function setPhoto(index) {
+function setPhoto(card_type) {
     var photo = "";
-    switch (index) {
+    switch (card_type) {
          case 'C':
             photo = "C.jpg";
             break;
@@ -121,6 +121,12 @@ function setPhoto(index) {
     return photo;
 }
 
+function isHaveArmor(card_type) {
+    if (card_type == 'W' || card_type == 'Z') {
+        return true;
+    }
+    return false;
+}
 
 
 function showGreeting(message) {
@@ -156,6 +162,7 @@ function showGreeting(message) {
         if (message.enemyInfo.table[i].canAttack) {
             hoverborder = "blueborder";
         }
+
         if (!message.isYourStep) {
             if (message.hover.table == i) {
                 hoverborder = "greenborder";
@@ -165,6 +172,10 @@ function showGreeting(message) {
             if (message.hover.enemy == i) {
                 hoverborder = "redborder";
             }
+        }
+
+        if (isHaveArmor(message.enemyInfo.table[i].type)) {
+            hoverborder += " blackborder";
         }
 
         $("#et").append(
@@ -194,6 +205,10 @@ function showGreeting(message) {
             }
         }
 
+        if (isHaveArmor(message.yourInfo.table[i].type)) {
+            hoverborder += " blackborder";
+        }
+
         $("#yt").append(
            "<div class='card " + hoverborder + "'>" +
                "<img src='" + photo + "'>" +
@@ -213,6 +228,10 @@ function showGreeting(message) {
             }
         }
 
+        if (isHaveArmor(message.yourInfo.hand[i].type)) {
+           hoverborder += " blackborder";
+        }
+
         $("#yh").append(
             "<div class='card " + hoverborder + "'>" +
                 "<img src='" + photo + "'>" +
@@ -222,7 +241,6 @@ function showGreeting(message) {
             "</div>"
         );
     }
-
 
 //     $("you").html("<p id='you'> You 100 hp 10 mana </p>");
     $("#enemy").html(

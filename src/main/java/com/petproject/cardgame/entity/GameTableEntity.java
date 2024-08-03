@@ -4,20 +4,30 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 @Document("game_table")
 public class GameTableEntity {
     @Id
-    public String id;
+    private String id;
 
-    public LobbyEntity lobby;
+    private String winner;
+    private List<String> lobby;
 
-    public Boolean isGameContinues;
-    public Boolean isFirstPlayerStep;
+    private Boolean isGameContinues;
+    private Boolean isFirstPlayerStep;
 
-    public HoverEntity hover;
+    private HoverEntity hover;
 
-    public PlayerEntity firstPlayer;
-    public PlayerEntity secondPlayer;
+    private PlayerEntity firstPlayer;
+    private PlayerEntity secondPlayer;
 
+    public GameTableEntity() {
+        this.setId("1");
+        this.setWinner("?");
+        this.setIsGameContinues(false);
+        this.setLobby(new ArrayList<>());
+    }
 }

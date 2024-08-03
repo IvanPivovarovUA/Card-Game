@@ -2,7 +2,7 @@ package com.petproject.cardgame.service;
 
 import com.petproject.cardgame.entity.*;
 import com.petproject.cardgame.repository.GameTableRepository;
-import com.petproject.cardgame.service.game_table.UseCardService;
+import com.petproject.cardgame.service.game_process.UseCardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.petproject.cardgame.model.Card;
@@ -18,33 +18,16 @@ public class LobbyService {
     @Autowired
     private GameTableRepository gameTableRepository;
 
-    @Autowired
-    private UseCardService useCardService;
-
-    //override
     public GameTableEntity getGameTable() {
-
         Optional<GameTableEntity> gameTableEntityOptional = gameTableRepository.findById("1");
 
         if (gameTableEntityOptional.isEmpty()) {
             GameTableEntity gameTableEntity = new GameTableEntity();
-            gameTableEntity.setId("1");
-            gameTableEntity.setIsGameContinues(false);
-
-            LobbyEntity lobbyEntity = new LobbyEntity();
-            lobbyEntity.setWantToPlayUsers(new ArrayList<>());
-            gameTableEntity.setLobby(lobbyEntity);
-
-
-            HoverEntity hoverEntity = new HoverEntity();
-            gameTableEntity.setHover(hoverEntity);
-
             gameTableRepository.save(gameTableEntity);
 
             return gameTableEntity;
         }
         else {
-
             return gameTableEntityOptional.get();
         }
     }
@@ -53,15 +36,17 @@ public class LobbyService {
         GameTableEntity gameTableEntity = getGameTable();
 
         if (
-            null != gameTableEntity.getLobby().getFirstPlayerId()
-            && gameTableEntity.getLobby().getFirstPlayerId().equals(UserId)
+                null != gameTableEntity.getFirstPlayer()
+            && null != gameTableEntity.getFirstPlayer().getId()
+            && gameTableEntity.getFirstPlayer().getId().equals(UserId)
         ) {
             return true;
         }
 
         if (
-            null != gameTableEntity.getLobby().getSecondPlayerId()
-            && gameTableEntity.getLobby().getSecondPlayerId().equals(UserId)
+                null != gameTableEntity.getSecondPlayer()
+            && null != gameTableEntity.getSecondPlayer().getId()
+            && gameTableEntity.getSecondPlayer().getId().equals(UserId)
         ) {
             return true;
         }
@@ -72,7 +57,7 @@ public class LobbyService {
     public boolean isUserInLobby(String UserId) {
         GameTableEntity gameTableEntity = getGameTable();
         if (
-                gameTableEntity.getLobby().getWantToPlayUsers().contains(UserId)
+                gameTableEntity.getLobby().contains(UserId)
             ) {
             return true;
         }
@@ -82,17 +67,20 @@ public class LobbyService {
 
     public void addUserInLobby(String UserId) {
         GameTableEntity gameTableEntity = getGameTable();
-
-        gameTableEntity.getLobby().getWantToPlayUsers().add(UserId);
-
+        gameTableEntity.getLobby().add(UserId);
         gameTableRepository.save(gameTableEntity);
     }
 
     public void removeUserFromLobby(String UserId) {
         GameTableEntity gameTableEntity = getGameTable();
-
-        gameTableEntity.getLobby().getWantToPlayUsers().remove(UserId);
+        gameTableEntity.getLobby().remove(UserId);
         gameTableRepository.save(gameTableEntity);
+    }
+
+    public boolean canIStartGame() {
+        GameTableEntity gameTableEntity = getGameTable();
+        return !gameTableEntity.getIsGameContinues()
+                && gameTableEntity.getLobby().size() >= 2;
     }
 
     public void startGame() {
@@ -100,56 +88,43 @@ public class LobbyService {
 
         if (
                 !gameTableEntity.getIsGameContinues()
-                && gameTableEntity.getLobby().getWantToPlayUsers().size() >= 2
+                && gameTableEntity.getLobby().size() >= 2
         ) {
 
             gameTableEntity.setIsGameContinues(true);
             gameTableEntity.setIsFirstPlayerStep(true);
+            gameTableEntity.setHover(new HoverEntity());
+            gameTableEntity.setWinner("?");
 
-
-            PlayerEntity playerEntity = new PlayerEntity(
-                    30,
-                    10,
-                    new ArrayList<Card>(),
-                    new ArrayList<CardOnTableEntity>()
-            );
-            gameTableEntity.setFirstPlayer(playerEntity);
-            gameTableEntity.setSecondPlayer(playerEntity);
-
-            gameTableEntity.getLobby().setWinner("?");
 
             Random PRNG = new Random();
             int RandomNumber;
 
-            RandomNumber = PRNG.nextInt(gameTableEntity.getLobby().getWantToPlayUsers().size());
-            gameTableEntity.getLobby().setFirstPlayerId(
-                    gameTableEntity.getLobby().getWantToPlayUsers().get(RandomNumber)
+            RandomNumber = PRNG.nextInt(gameTableEntity.getLobby().size());
+            gameTableEntity.setFirstPlayer(
+                new PlayerEntity(
+                        gameTableEntity.getLobby().get(RandomNumber),
+                        30,
+                        10,
+                        new ArrayList<Card>(),
+                        new ArrayList<CardOnTableEntity>()
+                )
             );
-            gameTableEntity.getLobby().getWantToPlayUsers().remove(RandomNumber);
+            gameTableEntity.getLobby().remove(RandomNumber);
 
-            RandomNumber = PRNG.nextInt(gameTableEntity.getLobby().getWantToPlayUsers().size());
-            gameTableEntity.getLobby().setSecondPlayerId(
-                    gameTableEntity.getLobby().getWantToPlayUsers().get(RandomNumber)
+            RandomNumber = PRNG.nextInt(gameTableEntity.getLobby().size());
+            gameTableEntity.setSecondPlayer(
+                new PlayerEntity(
+                        gameTableEntity.getLobby().get(RandomNumber),
+                        30,
+                        10,
+                        new ArrayList<Card>(),
+                        new ArrayList<CardOnTableEntity>()
+                )
             );
-            gameTableEntity.getLobby().getWantToPlayUsers().remove(RandomNumber);
-
-
-            gameTableEntity.getFirstPlayer().setCardsOnTable(new ArrayList<>());
-            gameTableEntity.getFirstPlayer().setCardsOnHand(new ArrayList<>());
-            gameTableEntity.getSecondPlayer().setCardsOnTable(new ArrayList<>());
-            gameTableEntity.getSecondPlayer().setCardsOnHand(new ArrayList<>());
+            gameTableEntity.getLobby().remove(RandomNumber);
 
             gameTableRepository.save(gameTableEntity);
-
-
-            for (int i = 0; i < 5; i++) {
-                useCardService.addCardInHand(true);
-            }
-
-            for (int i = 0; i < 5; i++) {
-                useCardService.addCardInHand(false);
-            }
-
         }
     }
 }

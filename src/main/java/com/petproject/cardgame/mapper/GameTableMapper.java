@@ -1,111 +1,72 @@
 package com.petproject.cardgame.mapper;
 
-
-import com.petproject.cardgame.entity.CardOnTableEntity;
 import com.petproject.cardgame.entity.GameTableEntity;
+import com.petproject.cardgame.entity.PlayerEntity;
 import com.petproject.cardgame.model.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 
 public class GameTableMapper {
 
-    static public InfoForPlayer GameTableToInfoForPlayer(GameTableEntity gameTableEntity, boolean isItInfoForFirstPlayer) {
-        InfoForPlayer infoForPlayer = new InfoForPlayer();
-        infoForPlayer.setYourInfo(new YourInfo());
-        infoForPlayer.setEnemyInfo(new EnemyInfo());
+    static public InfoForPlayerDto GameTableToInfoForPlayer(GameTableEntity gameTableEntity, boolean isItInfoForFirstPlayer) {
+        InfoForPlayerDto infoForPlayerDto = new InfoForPlayerDto();
+        infoForPlayerDto.setYourInfo(new YourInfo());
+        infoForPlayerDto.setEnemyInfo(new EnemyInfo());
 
+        PlayerEntity MainP;
+        PlayerEntity WorkP;
         if (isItInfoForFirstPlayer) {
-            List<CardStats> cardStatsList =
-                    gameTableEntity.getFirstPlayer().getCardsOnHand()
-                        .stream()
-                        .map(
-                            c -> new CardStats(c)
-                        )
-                        .collect(
-                                Collectors.toList()
-                        );
-
-            infoForPlayer.getYourInfo().setHand(
-                    cardStatsList
-            );
-
-            infoForPlayer.getYourInfo().setTable(
-                    gameTableEntity.getFirstPlayer().getCardsOnTable()
-            );
-
-            infoForPlayer.getEnemyInfo().setTable(
-                    gameTableEntity.getSecondPlayer().getCardsOnTable()
-            );
-
-            infoForPlayer.getEnemyInfo().setHand(
-                    gameTableEntity.getSecondPlayer().getCardsOnHand().size()
-            );
-
-            infoForPlayer.setIsYourStep(gameTableEntity.getIsFirstPlayerStep());
-
-
-            infoForPlayer.getYourInfo().setNickname(gameTableEntity.getLobby().getFirstPlayerId());
-            infoForPlayer.getEnemyInfo().setNickname(gameTableEntity.getLobby().getSecondPlayerId());
-
-
-            infoForPlayer.getYourInfo().setHp(gameTableEntity.getFirstPlayer().getHp());
-            infoForPlayer.getYourInfo().setMana(gameTableEntity.getFirstPlayer().getMana());
-            infoForPlayer.getEnemyInfo().setHp(gameTableEntity.getSecondPlayer().getHp());
-            infoForPlayer.getEnemyInfo().setMana(gameTableEntity.getSecondPlayer().getMana());
-
-
+            MainP = gameTableEntity.getFirstPlayer();
+            WorkP = gameTableEntity.getSecondPlayer();
+            infoForPlayerDto.setIsYourStep(gameTableEntity.getIsFirstPlayerStep());
 
         }
         else {
-            List<CardStats> cardStatsList =
-                    gameTableEntity.getSecondPlayer().getCardsOnHand()
-                            .stream()
-                            .map(
-                                    c -> new CardStats(c)
-                            )
-                            .collect(
-                                    Collectors.toList()
-                            );
-
-            infoForPlayer.getYourInfo().setHand(
-                    cardStatsList
-            );
-
-            infoForPlayer.getYourInfo().setTable(
-                    gameTableEntity.getSecondPlayer().getCardsOnTable()
-            );
-
-            infoForPlayer.getEnemyInfo().setTable(
-                    gameTableEntity.getFirstPlayer().getCardsOnTable()
-            );
-
-            infoForPlayer.getEnemyInfo().setHand(
-                    gameTableEntity.getFirstPlayer().getCardsOnHand().size()
-            );
-
-            infoForPlayer.setIsYourStep(!gameTableEntity.getIsFirstPlayerStep());
-
-            infoForPlayer.getYourInfo().setNickname(gameTableEntity.getLobby().getSecondPlayerId());
-            infoForPlayer.getEnemyInfo().setNickname(gameTableEntity.getLobby().getFirstPlayerId());
-
-
-            infoForPlayer.getYourInfo().setHp(gameTableEntity.getSecondPlayer().getHp());
-            infoForPlayer.getYourInfo().setMana(gameTableEntity.getSecondPlayer().getMana());
-            infoForPlayer.getEnemyInfo().setHp(gameTableEntity.getFirstPlayer().getHp());
-            infoForPlayer.getEnemyInfo().setMana(gameTableEntity.getFirstPlayer().getMana());
-
-
+            MainP = gameTableEntity.getSecondPlayer();
+            WorkP = gameTableEntity.getFirstPlayer();
+            infoForPlayerDto.setIsYourStep(!gameTableEntity.getIsFirstPlayerStep());
         }
 
+        List<CardDto> cardDtoList =
+            MainP.getCardsOnHand()
+                .stream()
+                .map(
+                        c -> new CardDto(c)
+                )
+                .collect(
+                        Collectors.toList()
+                );
 
-        infoForPlayer.setHover(
+        infoForPlayerDto.getYourInfo().setHand(
+                cardDtoList
+        );
+
+        infoForPlayerDto.getYourInfo().setTable(
+                MainP.getCardsOnTable()
+        );
+
+        infoForPlayerDto.getEnemyInfo().setTable(
+                WorkP.getCardsOnTable()
+        );
+
+        infoForPlayerDto.getEnemyInfo().setHand(
+                WorkP.getCardsOnHand().size()
+        );
+
+
+        infoForPlayerDto.getYourInfo().setNickname(MainP.getId());
+        infoForPlayerDto.getEnemyInfo().setNickname(WorkP.getId());
+
+        infoForPlayerDto.getYourInfo().setHp(MainP.getHp());
+        infoForPlayerDto.getYourInfo().setMana(MainP.getMana());
+        infoForPlayerDto.getEnemyInfo().setHp(WorkP.getHp());
+        infoForPlayerDto.getEnemyInfo().setMana(WorkP.getMana());
+
+        infoForPlayerDto.setHover(
                 gameTableEntity.getHover()
         );
 
-        return infoForPlayer;
+        return infoForPlayerDto;
     }
 }

@@ -1,8 +1,7 @@
-package com.petproject.cardgame.service.game_table;
+package com.petproject.cardgame.service.game_process;
 
 import com.petproject.cardgame.entity.CardOnTableEntity;
 import com.petproject.cardgame.entity.GameTableEntity;
-import com.petproject.cardgame.entity.LobbyEntity;
 import com.petproject.cardgame.repository.GameTableRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,27 +15,25 @@ public class GameProcessService {
 
     public String getFirstPlayerId() {
         GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();
-        return gameTableEntity.getLobby().getFirstPlayerId();
+        return gameTableEntity.getFirstPlayer().getId();
     }
 
     public String getSecondPlayerId() {
         GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();
-        return gameTableEntity.getLobby().getSecondPlayerId();
+        return gameTableEntity.getSecondPlayer().getId();
     }
-
 
     public boolean isUserHaveExec(String UserId) {
         GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();
-        LobbyEntity lobbyEntity = gameTableEntity.getLobby();
 
         if (
-                lobbyEntity.getFirstPlayerId().equals(UserId)
+                gameTableEntity.getFirstPlayer().getId().equals(UserId)
                 && gameTableEntity.getIsFirstPlayerStep()
         ) {
             return true;
         }
         else if (
-                lobbyEntity.getSecondPlayerId().equals(UserId)
+                gameTableEntity.getSecondPlayer().getId().equals(UserId)
                 && !gameTableEntity.getIsFirstPlayerStep()
         ) {
             return true;
@@ -50,23 +47,24 @@ public class GameProcessService {
         GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();
 
         if (gameTableEntity.getIsFirstPlayerStep()) {
-
             gameTableEntity.setIsFirstPlayerStep(false);
             gameTableEntity.getSecondPlayer().setMana(10);
-
             for (CardOnTableEntity cardOnTableEntity : gameTableEntity.getSecondPlayer().getCardsOnTable()) {
-                cardOnTableEntity.setCanAttack(true);
+                if (!cardOnTableEntity.getType().name().equals("W")) {
+                    cardOnTableEntity.setCanAttack(true);
+                }
             }
         }
         else {
             gameTableEntity.setIsFirstPlayerStep(true);
             gameTableEntity.getFirstPlayer().setMana(10);
-
             for (CardOnTableEntity cardOnTableEntity : gameTableEntity.getFirstPlayer().getCardsOnTable()) {
-                cardOnTableEntity.setCanAttack(true);
+                if (!cardOnTableEntity.getType().name().equals("W")) {
+                    cardOnTableEntity.setCanAttack(true);
+                }
+
             }
         }
         gameTableRepository.save(gameTableEntity);
-
     }
 }
