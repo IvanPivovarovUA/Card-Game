@@ -54,6 +54,11 @@ public class GameProcessService {
                     cardOnTableEntity.setCanAttack(true);
                 }
             }
+            for (CardOnTableEntity cardOnTableEntity : gameTableEntity.getFirstPlayer().getCardsOnTable()) {
+                if (!cardOnTableEntity.getType().name().equals("W")) {
+                    cardOnTableEntity.setCanAttack(false);
+                }
+            }
         }
         else {
             gameTableEntity.setIsFirstPlayerStep(true);
@@ -62,8 +67,13 @@ public class GameProcessService {
                 if (!cardOnTableEntity.getType().name().equals("W")) {
                     cardOnTableEntity.setCanAttack(true);
                 }
-
             }
+            for (CardOnTableEntity cardOnTableEntity : gameTableEntity.getSecondPlayer().getCardsOnTable()) {
+                if (!cardOnTableEntity.getType().name().equals("W")) {
+                    cardOnTableEntity.setCanAttack(false);
+                }
+            }
+
         }
         gameTableRepository.save(gameTableEntity);
     }

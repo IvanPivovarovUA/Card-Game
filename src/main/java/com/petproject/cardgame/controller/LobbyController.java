@@ -59,10 +59,10 @@ public class LobbyController {
         if (lobbyService.canIStartGame()) {
             lobbyService.startGame();
 
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < 5; i++) {
                 useCardService.addCardInHand(true);
             }
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < 5; i++) {
                 useCardService.addCardInHand(false);
             }
 

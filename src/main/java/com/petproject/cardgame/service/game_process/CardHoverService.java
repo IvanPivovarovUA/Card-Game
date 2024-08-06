@@ -8,6 +8,7 @@ import com.petproject.cardgame.repository.GameTableRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 @Service
 public class CardHoverService {
 
@@ -18,49 +19,71 @@ public class CardHoverService {
         return gameTableRepository.findById("1").get().getHover();
     }
 
+
+    public void reset() {
+        GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();
+        gameTableEntity.setHover(new HoverEntity());
+        gameTableRepository.save(gameTableEntity);
+    }
+
+
+
+
     public void hover(Integer index, Character place) {
         GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();
         place = Character.toUpperCase(place);
 
-        PlayerEntity MainPlayer;
-        PlayerEntity WorkPlayer;
-        if (gameTableEntity.getIsFirstPlayerStep()) {
-            MainPlayer = gameTableEntity.getFirstPlayer();
-            WorkPlayer = gameTableEntity.getSecondPlayer();
-        }
-        else {
-            MainPlayer = gameTableEntity.getSecondPlayer();
-            WorkPlayer = gameTableEntity.getFirstPlayer();
-        }
+
 
         if (place.equals('H')) {
-            if (MainPlayer.getCardsOnHand().get(index).getMana() <= MainPlayer.getMana()) {
-                gameTableEntity.setHover(creatCleanHoverEntity());
-                gameTableEntity.getHover().setHand(index);
-            }
+            gameTableEntity.setHover(new HoverEntity());
+            gameTableEntity.getHover().setHand(index);
         }
 
         if (place.equals('T')) {
+            String[] cardList1 = {"P", "H", "S"};
+            String[] cardList2 = {"z", "T"};
+
+
             if (
-                    MainPlayer.getCardsOnTable().get(index).getCanAttack()
+                    gameTableEntity.getHover().getHand() != -1
+                    && isItTwoClickSpell(cardList1)
             ) {
-                gameTableEntity.setHover(creatCleanHoverEntity());
                 gameTableEntity.getHover().setTable(index);
             }
+            else if(
+                    gameTableEntity.getHover().getHand() != -1
+                    && !isItTwoClickSpell(cardList2)
+            ) {
+                gameTableEntity.setHover(new HoverEntity());
+                gameTableEntity.getHover().setTable(index);
+            }
+            else if(
+                    gameTableEntity.getHover().getHand() == -1
+                    && isCardCanAttack(index)
+            ) {
+                gameTableEntity.setHover(new HoverEntity());
+                gameTableEntity.getHover().setTable(index);
+            }
+
+
         }
 
         if (place.equals('E')) {
+            String[] cardList = {"z", "T"};
+
             if (
-                    gameTableEntity.getHover().getHand() == -1
-                    && gameTableEntity.getHover().getTable() != -1
-                    && (
-                        !isThereArmorCard(WorkPlayer)
-                        || WorkPlayer.getCardsOnTable().get(index).getType().name().equals("W")
-                        || WorkPlayer.getCardsOnTable().get(index).getType().name().equals("Z")
-                    )
+                    gameTableEntity.getHover().getHand() != -1
+                    && isItTwoClickSpell(cardList)
             ) {
                 gameTableEntity.getHover().setEnemy(index);
-                gameTableEntity.getHover().setPlayer(false);
+            }
+            else if (
+                    gameTableEntity.getHover().getHand() == -1
+                    && gameTableEntity.getHover().getTable() != -1
+                    && !isThereAnyArmorCard(index)
+            ) {
+                gameTableEntity.getHover().setEnemy(index);
             }
 
         }
@@ -69,18 +92,36 @@ public class CardHoverService {
             if (
                     gameTableEntity.getHover().getHand() == -1
                     && gameTableEntity.getHover().getTable() != -1
-                    && !isThereArmorCard(WorkPlayer)
+                    && !isThereAnyArmorCard()
             ) {
-                gameTableEntity.getHover().setEnemy(-1);
                 gameTableEntity.getHover().setPlayer(true);
             }
+
         }
 
         gameTableRepository.save(gameTableEntity);
     }
 
-    public boolean isThereArmorCard(PlayerEntity WorkPlayer) {
-        for (CardOnTableEntity cardOnTableEntity: WorkPlayer.getCardsOnTable()) {
+    public boolean isThereAnyArmorCard(int index) {
+        GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();
+
+        PlayerEntity workPlayer;
+        if (gameTableEntity.getIsFirstPlayerStep()) {
+            workPlayer = gameTableEntity.getSecondPlayer();
+        }
+        else {
+
+            workPlayer = gameTableEntity.getFirstPlayer();
+        }
+
+        if (
+                workPlayer.getCardsOnTable().get(index).getType().name().equals("W")
+                || workPlayer.getCardsOnTable().get(index).getType().name().equals("Z")
+        ) {
+            return false;
+        }
+
+        for (CardOnTableEntity cardOnTableEntity: workPlayer.getCardsOnTable()) {
             if (
                     cardOnTableEntity.getType().name().equals("W")
                     || cardOnTableEntity.getType().name().equals("Z")
@@ -91,22 +132,73 @@ public class CardHoverService {
         return false;
     }
 
-    public HoverEntity creatCleanHoverEntity() {
-        HoverEntity hoverEntity = new HoverEntity();
-
-        hoverEntity.setHand(-1);
-        hoverEntity.setTable(-1);
-        hoverEntity.setEnemy(-1);
-        hoverEntity.setPlayer(false);
-
-        return hoverEntity;
-    }
-
-
-    public void reset() {
+    public boolean isThereAnyArmorCard() {
         GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();
-        gameTableEntity.setHover(creatCleanHoverEntity());
-        gameTableRepository.save(gameTableEntity);
+
+        PlayerEntity workPlayer;
+        if (gameTableEntity.getIsFirstPlayerStep()) {
+            workPlayer = gameTableEntity.getSecondPlayer();
+        }
+        else {
+
+            workPlayer = gameTableEntity.getFirstPlayer();
+        }
+
+
+        for (CardOnTableEntity cardOnTableEntity: workPlayer.getCardsOnTable()) {
+            if (
+                    cardOnTableEntity.getType().name().equals("W")
+                            || cardOnTableEntity.getType().name().equals("Z")
+            ) {
+                return true;
+            }
+        }
+        return false;
     }
+
+
+
+    public boolean isItTwoClickSpell(String[] cardList) {
+        GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();
+
+        String cardString;
+
+        if (gameTableEntity.getIsFirstPlayerStep()) {
+            cardString = gameTableEntity.getFirstPlayer().getCardsOnHand().get(
+                    gameTableEntity.getHover().getHand()
+            ).name();
+        }
+        else {
+            cardString = gameTableEntity.getSecondPlayer().getCardsOnHand().get(
+                    gameTableEntity.getHover().getHand()
+            ).name();
+        }
+
+
+        for (String c : cardList) {
+            if (cardString.equals(c) ){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isCardCanAttack(int index) {
+        GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();
+
+        PlayerEntity mainPlayer;
+        if (gameTableEntity.getIsFirstPlayerStep()) {
+            mainPlayer = gameTableEntity.getFirstPlayer();
+        }
+        else {
+            mainPlayer = gameTableEntity.getSecondPlayer();
+        }
+
+        return mainPlayer.getCardsOnTable()
+                .get(index)
+                .getCanAttack();
+
+    }
+
 
 }

@@ -15,4 +15,9 @@ public class HoverEntity {
         this.enemy = -1;
         this.player = false;
     }
+
+
+
+
+
 }

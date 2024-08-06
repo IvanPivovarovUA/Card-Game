@@ -92,17 +92,21 @@
 .redborder {
      border: 5px solid red;
      margin: 5px;
+     border-style: dashed;
 }
 .greenborder {
      border: 5px solid green;
      margin: 5px;
+     border-style: dashed;
 }
 .blueborder {
      border: 5px solid blue;
      margin: 5px;
+     border-style: dashed;
 }
 .blackborder {
-     border-radius:50px;
+    border: 5px solid black;
+    margin: 5px;
 }
 
 .yellowback {

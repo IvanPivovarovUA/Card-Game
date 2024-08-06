@@ -85,7 +85,7 @@ function use_card() {
 function setPhoto(card_type) {
     var photo = "";
     switch (card_type) {
-         case 'C':
+        case 'C':
             photo = "C.jpg";
             break;
         case 'W':
@@ -114,6 +114,33 @@ function setPhoto(card_type) {
             break;
         case 'l':
             photo = "ll.jpg";
+            break;
+        case 'F':
+            photo = "F.jpg";
+            break;
+        case 'A':
+            photo = "A.webp";
+            break;
+        case 'M':
+            photo = "M.jpg";
+            break;
+        case 'I':
+            photo = "I.webp";
+            break;
+        case 'z':
+            photo = "z.jpg";
+            break;
+        case 'T':
+            photo = "T.jpg";
+            break;
+        case 'P':
+            photo = "P.jpg";
+            break;
+        case 'H':
+            photo = "H.jfif";
+            break;
+        case 'E':
+            photo = "E.jpg";
             break;
 
     }
@@ -159,6 +186,10 @@ function showGreeting(message) {
         var photo = setPhoto(message.enemyInfo.table[i].type);
         var hoverborder = "";
 
+        if (isHaveArmor(message.enemyInfo.table[i].type)) {
+            hoverborder = " blackborder";
+        }
+
         if (message.enemyInfo.table[i].canAttack) {
             hoverborder = "blueborder";
         }
@@ -174,9 +205,7 @@ function showGreeting(message) {
             }
         }
 
-        if (isHaveArmor(message.enemyInfo.table[i].type)) {
-            hoverborder += " blackborder";
-        }
+
 
         $("#et").append(
            "<div class='card " + hoverborder + "'>" +
@@ -190,6 +219,10 @@ function showGreeting(message) {
     for (var i in message.yourInfo.table) {
         var photo = setPhoto(message.yourInfo.table[i].type);
         var hoverborder = "";
+
+        if (isHaveArmor(message.yourInfo.table[i].type)) {
+            hoverborder = "blackborder";
+        }
 
         if (message.yourInfo.table[i].canAttack) {
             hoverborder = "blueborder";
@@ -205,9 +238,7 @@ function showGreeting(message) {
             }
         }
 
-        if (isHaveArmor(message.yourInfo.table[i].type)) {
-            hoverborder += " blackborder";
-        }
+
 
         $("#yt").append(
            "<div class='card " + hoverborder + "'>" +
@@ -222,15 +253,16 @@ function showGreeting(message) {
         var photo = setPhoto(message.yourInfo.hand[i].type);
         var hoverborder = "";
 
+        if (isHaveArmor(message.yourInfo.hand[i].type)) {
+           hoverborder = " blackborder";
+        }
+
         if (message.isYourStep) {
             if (message.hover.hand == i) {
                 hoverborder = "greenborder";
             }
         }
 
-        if (isHaveArmor(message.yourInfo.hand[i].type)) {
-           hoverborder += " blackborder";
-        }
 
         $("#yh").append(
             "<div class='card " + hoverborder + "'>" +
