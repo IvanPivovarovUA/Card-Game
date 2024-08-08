@@ -40,107 +40,108 @@ public class UseCardService {
         gameTableRepository.save(gameTableEntity);
     }
 
-    public boolean useCard() {
-        GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();
-        int index = gameTableEntity.getHover().getHand();
-        PlayerEntity mainPlayer;
-        if (gameTableEntity.getIsFirstPlayerStep()) {
-            mainPlayer = gameTableEntity.getFirstPlayer();
-        }
-        else {
-            mainPlayer = gameTableEntity.getSecondPlayer();
-        }
-
-
-        if (
-                gameTableEntity.getHover().getHand() == -1
-                && gameTableEntity.getHover().getTable() != -1
-        ) {
-            if (gameTableEntity.getHover().getEnemy() != -1) {
-                attackCard();
-                return true;
-            }
-            if (gameTableEntity.getHover().getPlayer()) {
-                attackPlayer();
-                return true;
-            }
-        }
-
-        if (
-                mainPlayer.getCardsOnHand().get(
-                        gameTableEntity.getHover().getHand()
-                ).getMana() <= mainPlayer.getMana()
-                && gameTableEntity.getHover().getHand() != -1
-        ) {
-            switch (
-                mainPlayer.getCardsOnHand().get(
-                    gameTableEntity.getHover().getHand()
-                ).name()
-            ) {
-                case "A":
-                    oneClickSpellService.arrowSpell();
-                    removeHoverCardFromHand();
-                    return true;
-                case "F":
-                    oneClickSpellService.fireSpell();
-                    removeHoverCardFromHand();
-                    return true;
-                case "M":
-                    oneClickSpellService.moneySpell();
-                    removeHoverCardFromHand();
-                    return true;
-                case "I":
-                    addCardInHand();
-                    addCardInHand();
-                    addCardInHand();
-                    removeHoverCardFromHand();
-                    return true;
-                //////////////////////////////
-                case "P":
-                    if (twoClickSpellService.canIUseSpell()) {
-                        twoClickSpellService.pivoSpell();
-                        removeHoverCardFromHand();
-                        return true;
-                    }
-                    break;
-                case "S":
-                    if (twoClickSpellService.canIUseSpell()) {
-                        twoClickSpellService.swordSpell();
-                        removeHoverCardFromHand();
-                        return true;
-                    }
-                    break;
-                case "H":
-                    if (twoClickSpellService.canIUseSpell()) {
-                        twoClickSpellService.crossSpell();
-                        removeHoverCardFromHand();
-                        return true;
-                    }
-                    break;
-                case "T":
-                    if (twoClickSpellService.canIUseSpell()) {
-                        twoClickSpellService.turretSpell();
-                        removeHoverCardFromHand();
-                        return true;
-                    }
-                    break;
-                case "z":
-                    if (twoClickSpellService.canIUseSpell()) {
-                        twoClickSpellService.potionSpell();
-                        removeHoverCardFromHand();
-                        return true;
-                    }
-                    break;
-                ////////////////////////////
-                default:
-                    putCardOnTable();
-                    removeHoverCardFromHand();
-                    return true;
-            }
-        }
-
-        return false;
-    }
+//    public boolean useCard() {
+//        GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();
+//        int index = gameTableEntity.getHover().getHand();
+//        PlayerEntity mainPlayer;
+//        if (gameTableEntity.getIsFirstPlayerStep()) {
+//            mainPlayer = gameTableEntity.getFirstPlayer();
+//        }
+//        else {
+//            mainPlayer = gameTableEntity.getSecondPlayer();
+//        }
+//
+//
+//        if (
+//                gameTableEntity.getHover().getHand() == -1
+//                && gameTableEntity.getHover().getTable() != -1
+//        ) {
+//            if (gameTableEntity.getHover().getEnemy() != -1) {
+//                attackCard();
+//                return true;
+//            }
+//            if (gameTableEntity.getHover().getPlayer()) {
+//                attackPlayer();
+//                return true;
+//            }
+//        }
+//
+//        if (
+//            gameTableEntity.getHover().getHand() != -1
+//            && mainPlayer.getCardsOnHand().get(
+//                    gameTableEntity.getHover().getHand()
+//            ).getMana() <= mainPlayer.getMana()
+//
+//        ) {
+//            switch (
+//                mainPlayer.getCardsOnHand().get(
+//                    gameTableEntity.getHover().getHand()
+//                ).name()
+//            ) {
+//                case "A":
+//                    oneClickSpellService.arrowSpell();
+//                    removeHoverCardFromHand();
+//                    return true;
+//                case "F":
+//                    oneClickSpellService.fireSpell();
+//                    removeHoverCardFromHand();
+//                    return true;
+//                case "M":
+//                    oneClickSpellService.moneySpell();
+//                    removeHoverCardFromHand();
+//                    return true;
+//                case "I":
+//                    addCardInHand();
+//                    addCardInHand();
+//                    addCardInHand();
+//                    removeHoverCardFromHand();
+//                    return true;
+//                //////////////////////////////
+//                case "P":
+//                    if (twoClickSpellService.canIUseSpell()) {
+//                        twoClickSpellService.pivoSpell();
+//                        removeHoverCardFromHand();
+//                        return true;
+//                    }
+//                    break;
+//                case "S":
+//                    if (twoClickSpellService.canIUseSpell()) {
+//                        twoClickSpellService.swordSpell();
+//                        removeHoverCardFromHand();
+//                        return true;
+//                    }
+//                    break;
+//                case "H":
+//                    if (twoClickSpellService.canIUseSpell()) {
+//                        twoClickSpellService.crossSpell();
+//                        removeHoverCardFromHand();
+//                        return true;
+//                    }
+//                    break;
+//                case "T":
+//                    if (twoClickSpellService.canIUseSpell()) {
+//                        twoClickSpellService.turretSpell();
+//                        removeHoverCardFromHand();
+//                        return true;
+//                    }
+//                    break;
+//                case "z":
+//                    if (twoClickSpellService.canIUseSpell()) {
+//                        twoClickSpellService.potionSpell();
+//                        removeHoverCardFromHand();
+//                        return true;
+//                    }
+//                    break;
+//                ////////////////////////////
+//                default:
+//                    putCardOnTable();
+//                    removeHoverCardFromHand();
+//                    return true;
+//            }
+//        }
+//
+//        return false;
+//    }
 
     public void removeHoverCardFromHand() {
         GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();

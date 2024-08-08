@@ -54,6 +54,7 @@ public class CardHoverService {
             else if(
                     gameTableEntity.getHover().getHand() != -1
                     && !isItTwoClickSpell(cardList2)
+                    && isCardCanAttack(index)
             ) {
                 gameTableEntity.setHover(new HoverEntity());
                 gameTableEntity.getHover().setTable(index);
@@ -70,7 +71,7 @@ public class CardHoverService {
         }
 
         if (place.equals('E')) {
-            String[] cardList = {"z", "T"};
+            String[] cardList = {"z", "T", "E"};
 
             if (
                     gameTableEntity.getHover().getHand() != -1
@@ -93,6 +94,14 @@ public class CardHoverService {
                     gameTableEntity.getHover().getHand() == -1
                     && gameTableEntity.getHover().getTable() != -1
                     && !isThereAnyArmorCard()
+            ) {
+                gameTableEntity.getHover().setPlayer(true);
+            }
+
+            String[] cardList = {"T"};
+            if (
+                    gameTableEntity.getHover().getHand() != -1
+                    && isItTwoClickSpell(cardList)
             ) {
                 gameTableEntity.getHover().setPlayer(true);
             }

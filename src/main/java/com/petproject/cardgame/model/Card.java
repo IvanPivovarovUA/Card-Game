@@ -8,14 +8,23 @@ import java.util.Random;
 
 @Getter
 public enum Card {
-//    P(4, 0, 2), F(3, 0, 2), A(5, 0, 2), T(6, 0, 8),
-    E(5,6, 7), z(2,0,3),
 
-    P(4, 0, 2), S(3,0, 2), H(4, 0, 2), T(3, 0, 2),
+    z(4,0,0), T(3, 0, 2),
 
-    I(5, 0, 3), F(3, 0, 2), A(5, 0, 2), M(0, 0, 4),
+    P(4, 0, 2), S(3,0, 2), H(4, 0, 2),
 
-    W(8, 10, 0), Z(6, 7, 4), K(5, 5, 5), V(2, 1, 3),
+    ////////////////////////////////////// I ~ power
+
+    F(3, 0, 2), A(5, 0, 2),
+
+    I(6, 0, 3), M(0, 0, 4),
+
+    //////////////////////////////////////
+
+    W(8, 10, 0), Z(6, 7, 4),
+
+    //////////////////////////////////////
+    E(5,6, 7), K(5, 5, 5), V(2, 1, 3),
 
     B(6, 6, 6), R(7, 7, 7), r(5, 5, 4),
 
@@ -40,12 +49,12 @@ public enum Card {
             cards.add(card);
         }
 
-        for (int i = 0 ; i < 3;  i++) {
-            cards.add(Card.K);
-            cards.add(Card.K);
-            cards.add(Card.L);
-            cards.add(Card.B);
-        }
+//        for (int i = 0 ; i < 2;  i++) {
+//        cards.add(Card.K);
+//        cards.add(Card.E);
+//        cards.add(Card.L);
+//        cards.add(Card.B);
+//        }
 
 
         return cards.get(PRNG.nextInt(cards.size()));

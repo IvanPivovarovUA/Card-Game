@@ -142,6 +142,9 @@ function setPhoto(card_type) {
         case 'E':
             photo = "E.jpg";
             break;
+        case 'S':
+            photo = "S.jpg";
+            break;
 
     }
     photo = "cards/" + photo;
@@ -149,7 +152,7 @@ function setPhoto(card_type) {
 }
 
 function isHaveArmor(card_type) {
-    if (card_type == 'W' || card_type == 'Z') {
+    if (card_type == 'W' || card_type == 'Z' || card_type == 'E') {
         return true;
     }
     return false;
@@ -158,7 +161,7 @@ function isHaveArmor(card_type) {
 
 function showGreeting(message) {
 
-//    console.log(message);
+    console.log(message);
 
     $("#eh").html("");
     $("#et").html("");
@@ -171,7 +174,7 @@ function showGreeting(message) {
 
         if (!message.isYourStep) {
             if (message.hover.hand == i) {
-                hoverborder = "greenborder";
+                hoverborder = "yellowborder ";
             }
         }
 
@@ -180,6 +183,8 @@ function showGreeting(message) {
                 "<img src='" + photo + "'>" +
             "</div>"
         );
+
+
     }
 
     for (var i in message.enemyInfo.table) {
@@ -196,7 +201,7 @@ function showGreeting(message) {
 
         if (!message.isYourStep) {
             if (message.hover.table == i) {
-                hoverborder = "greenborder";
+                hoverborder = "yellowborder ";
             }
         }
         if (message.isYourStep) {
@@ -229,7 +234,7 @@ function showGreeting(message) {
         }
         if (message.isYourStep) {
             if (message.hover.table == i) {
-                hoverborder = "greenborder";
+                hoverborder = "yellowborder";
             }
         }
         if (!message.isYourStep) {
@@ -259,7 +264,7 @@ function showGreeting(message) {
 
         if (message.isYourStep) {
             if (message.hover.hand == i) {
-                hoverborder = "greenborder";
+                hoverborder = "yellowborder ";
             }
         }
 
@@ -276,20 +281,23 @@ function showGreeting(message) {
 
 //     $("you").html("<p id='you'> You 100 hp 10 mana </p>");
     $("#enemy").html(
-        "<p>" + message.enemyInfo.nickname + "</p>" +
-        "<p class='redback'>" + message.enemyInfo.hp + "</p>" +
-        "<p class='blueback'>" + message.enemyInfo.mana + "</p>"
+        '<div class="box1"></div>' +
+        '<div class="box2">' + message.enemyInfo.nickname + '</div>' +
+        '<div class="box3">Hp:' + message.enemyInfo.hp + '</div>' +
+        '<div class="box4">Mana:' + message.enemyInfo.mana + '</div>'
     );
 
     $("#you").html(
-        "<p>" + message.yourInfo.nickname + "</p>" +
-        "<p class='redback'>" + message.yourInfo.hp + "</p>" +
-        "<p class='blueback'>" + message.yourInfo.mana + "</p>"
+        '<div class="box1"></div>' +
+        '<div class="box2">' + message.yourInfo.nickname + '</div>' +
+        '<div class="box3">Hp:' + message.yourInfo.hp + '</div>' +
+        '<div class="box4">Mana:' + message.yourInfo.mana + '</div>'
     );
 
 
     $("#enemy").removeClass("redborder");
     $("#you").removeClass("redborder");
+    $(".strip").html("");
 
     if (message.isYourStep) {
         $("#enemy").removeClass("greenback");
@@ -320,18 +328,17 @@ function showGreeting(message) {
 
 ///////////////////////
 function setInput() {
-    $("#you").append(
-        "<button type='button' id='use_card'>use card</button>" +
+    $(".strip").append(
+        "<button type='button' id='usecard'>use card</button>" +
         "<button type='button' id='reset'>reset</button>" +
         "<button type='button' id='next'>next</button>"
-
     );
 
     $(".card").click(function(){
         setHover($(this).index(), $(this).parent().attr('id'));
     });
 
-    $( "#use_card" ).click(() => use_card());
+    $( "#usecard" ).click(() => use_card());
     $( "#next" ).click(() => next());
     $( "#reset" ).click(() => reset());
     //getGameTableInfo()

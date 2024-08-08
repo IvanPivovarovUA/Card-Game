@@ -46,6 +46,14 @@ public class TwoClickSpellService {
             }
         }
 
+        if (
+                mainPlayer.getCardsOnHand().get(index).name().equals("T")
+        ) {
+            if (gameTableEntity.getHover().getPlayer()) {
+                return true;
+            }
+        }
+
         return false;
     }
 
@@ -110,7 +118,7 @@ public class TwoClickSpellService {
     public void turretSpell() {
         GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();
 
-        int index = gameTableEntity.getHover().getEnemy();
+        int tableIndex = gameTableEntity.getHover().getEnemy();
 
         PlayerEntity workPlayer;
         if (gameTableEntity.getIsFirstPlayerStep()) {
@@ -121,10 +129,10 @@ public class TwoClickSpellService {
             workPlayer = gameTableEntity.getFirstPlayer();
         }
 
-        if (index != -1) {
-            workPlayer.getCardsOnTable().get(index).plusHp(-Card.T.getPower());
-            if (workPlayer.getCardsOnTable().get(index).getHp() <= 0) {
-                workPlayer.getCardsOnTable().remove(index);
+        if (tableIndex != -1) {
+            workPlayer.getCardsOnTable().get(tableIndex).plusHp(-Card.T.getPower());
+            if (workPlayer.getCardsOnTable().get(tableIndex).getHp() <= 0) {
+                workPlayer.getCardsOnTable().remove(tableIndex);
             }
         }
         else {

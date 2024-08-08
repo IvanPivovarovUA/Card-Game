@@ -104,7 +104,7 @@ public class GameProcessController {
     @MessageMapping("/use_card")
     public void useCard(Principal principal) {
         if (gameProcessService.isUserHaveExec(principal.getName())) {
-            if (useCardService.useCard()) {
+            if (gameProcessService.useCard()) {
                 cardHoverService.reset();
                 sendGameTableInfo();
             }
