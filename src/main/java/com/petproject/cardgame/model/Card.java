@@ -9,26 +9,27 @@ import java.util.Random;
 @Getter
 public enum Card {
 
-    z(4,0,0), T(3, 0, 2),
 
-    P(4, 0, 2), S(3,0, 2), H(4, 0, 2),
+    z(7,0,0), T(8, 0, 6),
+
+    P(4, 0, 0), S(4,0, 2), H(4, 0, 2),
 
     ////////////////////////////////////// I ~ power
 
-    F(3, 0, 2), A(5, 0, 2),
+    F(5, 0, 3), A(5, 0, 2),
 
-    I(6, 0, 3), M(0, 0, 4),
-
-    //////////////////////////////////////
-
-    W(8, 10, 0), Z(6, 7, 4),
+    I(4, 0, 3), M(0, 0, 4),
 
     //////////////////////////////////////
-    E(5,6, 7), K(5, 5, 5), V(2, 1, 3),
 
-    B(6, 6, 6), R(7, 7, 7), r(5, 5, 4),
+    W(8, 10, 0), Z(6, 6, 4), m(5,5,5),
 
-    L(4, 3, 6), l(3, 3, 4);
+    //////////////////////////////////////
+    E(6,6, 6), K(5, 5, 5), V(3, 1, 3),
+
+    B(6, 6, 7), R(8, 8, 8), r(5, 6, 5),
+
+    L(5, 4, 5), l(3, 2, 4),  t(5,5,6);
 
     private int mana;
     private int hp;
@@ -56,7 +57,16 @@ public enum Card {
 //        cards.add(Card.B);
 //        }
 
-
         return cards.get(PRNG.nextInt(cards.size()));
     }
+
+    public static List<Card> getArmorCards() {
+        List<Card> armorCards = new ArrayList<>();
+        armorCards.add(W);
+        armorCards.add(Z);
+        armorCards.add(E);
+
+        return armorCards;
+    }
+
 }

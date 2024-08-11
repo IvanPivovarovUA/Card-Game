@@ -4,6 +4,8 @@ import com.petproject.cardgame.entity.CardOnTableEntity;
 import com.petproject.cardgame.entity.GameTableEntity;
 import com.petproject.cardgame.entity.PlayerEntity;
 import com.petproject.cardgame.repository.GameTableRepository;
+import com.petproject.cardgame.service.game_process.card_use.CardUseAccessService;
+import com.petproject.cardgame.service.game_process.card_use.CardUseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +16,10 @@ public class GameProcessService {
     GameTableRepository gameTableRepository;
 
     @Autowired
-    UseCardService useCardService;
+    CardUseService cardUseService;
+
+    @Autowired
+    CardUseAccessService cardUseAccessService;
 
     @Autowired
     OneClickSpellService oneClickSpellService;
@@ -68,6 +73,7 @@ public class GameProcessService {
                     cardOnTableEntity.setCanAttack(false);
                 }
             }
+            gameTableEntity.getFirstPlayer().getDropedSpells().clear();
         }
         else {
             gameTableEntity.setIsFirstPlayerStep(true);
@@ -82,8 +88,9 @@ public class GameProcessService {
                     cardOnTableEntity.setCanAttack(false);
                 }
             }
-
+            gameTableEntity.getSecondPlayer().getDropedSpells().clear();
         }
+
         gameTableRepository.save(gameTableEntity);
     }
 
@@ -101,90 +108,71 @@ public class GameProcessService {
         }
 
 
-        if (
-                gameTableEntity.getHover().getHand() == -1
-                        && gameTableEntity.getHover().getTable() != -1
-        ) {
-            if (gameTableEntity.getHover().getEnemy() != -1) {
-                useCardService.attackCard();
-                return true;
-            }
-            if (gameTableEntity.getHover().getPlayer()) {
-                useCardService.attackPlayer();
-                return true;
-            }
+        if (cardUseAccessService.canIAttackCard()) {
+            cardUseService.attackCard();
+            return true;
+        }
+        if (cardUseAccessService.canIAttackPlayer()) {
+            cardUseService.attackPlayer();
+            return true;
         }
 
-        if (
-                gameTableEntity.getHover().getHand() != -1
-                        && mainPlayer.getCardsOnHand().get(
-                        gameTableEntity.getHover().getHand()
-                ).getMana() <= mainPlayer.getMana()
 
+        if (
+                cardUseAccessService.isThereEnoughMana()
         ) {
             switch (
-                    mainPlayer.getCardsOnHand().get(
-                            gameTableEntity.getHover().getHand()
-                    ).name()
+                    cardUseService.getCardInHand().get().name()
             ) {
                 case "A":
                     oneClickSpellService.arrowSpell();
-                    useCardService.removeHoverCardFromHand();
                     return true;
                 case "F":
                     oneClickSpellService.fireSpell();
-                    useCardService.removeHoverCardFromHand();
                     return true;
                 case "M":
                     oneClickSpellService.moneySpell();
-                    useCardService.removeHoverCardFromHand();
                     return true;
                 case "I":
-                    useCardService.addCardInHand();
-                    useCardService.addCardInHand();
-                    useCardService.addCardInHand();
-                    useCardService.removeHoverCardFromHand();
+                    oneClickSpellService.ishakSpell();
+                    return true;
+                case "m":
+                    oneClickSpellService.manOnWar();
                     return true;
                 //////////////////////////////
                 case "P":
                     if (twoClickSpellService.canIUseSpell()) {
                         twoClickSpellService.pivoSpell();
-                        useCardService.removeHoverCardFromHand();
                         return true;
                     }
                     break;
                 case "S":
                     if (twoClickSpellService.canIUseSpell()) {
                         twoClickSpellService.swordSpell();
-                        useCardService.removeHoverCardFromHand();
                         return true;
                     }
                     break;
                 case "H":
                     if (twoClickSpellService.canIUseSpell()) {
                         twoClickSpellService.crossSpell();
-                        useCardService.removeHoverCardFromHand();
                         return true;
                     }
                     break;
                 case "T":
                     if (twoClickSpellService.canIUseSpell()) {
                         twoClickSpellService.turretSpell();
-                        useCardService.removeHoverCardFromHand();
                         return true;
                     }
                     break;
                 case "z":
                     if (twoClickSpellService.canIUseSpell()) {
                         twoClickSpellService.potionSpell();
-                        useCardService.removeHoverCardFromHand();
                         return true;
                     }
                     break;
                 ////////////////////////////
                 default:
-                    useCardService.putCardOnTable();
-                    useCardService.removeHoverCardFromHand();
+                    oneClickSpellService.defaultUnitCard();
                     return true;
             }
         }

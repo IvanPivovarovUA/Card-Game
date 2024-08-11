@@ -1,8 +1,7 @@
 package com.petproject.cardgame.controller;
 
-import com.petproject.cardgame.repository.GameTableRepository;
 import com.petproject.cardgame.service.LobbyService;
-import com.petproject.cardgame.service.game_process.UseCardService;
+import com.petproject.cardgame.service.game_process.card_use.CardUseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -26,7 +25,7 @@ public class LobbyController {
     private LobbyService lobbyService;
 
     @Autowired
-    private UseCardService useCardService;
+    private CardUseService cardUseService;
 
     public void sendLobbyInfo() {
         template.convertAndSend(
@@ -59,11 +58,11 @@ public class LobbyController {
         if (lobbyService.canIStartGame()) {
             lobbyService.startGame();
 
-            for (int i = 0; i < 5; i++) {
-                useCardService.addCardInHand(true);
+            for (int i = 0; i < 6; i++) {
+                cardUseService.addCardInHand(true);
             }
-            for (int i = 0; i < 5; i++) {
-                useCardService.addCardInHand(false);
+            for (int i = 0; i < 6; i++) {
+                cardUseService.addCardInHand(false);
             }
 
             sendLobbyInfo();

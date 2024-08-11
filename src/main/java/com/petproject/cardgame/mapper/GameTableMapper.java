@@ -11,25 +11,25 @@ public class GameTableMapper {
 
     static public InfoForPlayerDto GameTableToInfoForPlayer(GameTableEntity gameTableEntity, boolean isItInfoForFirstPlayer) {
         InfoForPlayerDto infoForPlayerDto = new InfoForPlayerDto();
-        infoForPlayerDto.setYourInfo(new YourInfo());
-        infoForPlayerDto.setEnemyInfo(new EnemyInfo());
+        infoForPlayerDto.setYourInfoDto(new YourInfoDto());
+        infoForPlayerDto.setEnemyInfoDto(new EnemyInfoDto());
 
-        PlayerEntity MainP;
-        PlayerEntity WorkP;
+        PlayerEntity mainPlayer;
+        PlayerEntity workPlayer;
         if (isItInfoForFirstPlayer) {
-            MainP = gameTableEntity.getFirstPlayer();
-            WorkP = gameTableEntity.getSecondPlayer();
+            mainPlayer = gameTableEntity.getFirstPlayer();
+            workPlayer = gameTableEntity.getSecondPlayer();
             infoForPlayerDto.setIsYourStep(gameTableEntity.getIsFirstPlayerStep());
 
         }
         else {
-            MainP = gameTableEntity.getSecondPlayer();
-            WorkP = gameTableEntity.getFirstPlayer();
+            mainPlayer = gameTableEntity.getSecondPlayer();
+            workPlayer = gameTableEntity.getFirstPlayer();
             infoForPlayerDto.setIsYourStep(!gameTableEntity.getIsFirstPlayerStep());
         }
 
         List<CardDto> cardDtoList =
-            MainP.getCardsOnHand()
+            mainPlayer.getCardsOnHand()
                 .stream()
                 .map(
                         c -> new CardDto(c)
@@ -38,34 +38,58 @@ public class GameTableMapper {
                         Collectors.toList()
                 );
 
-        infoForPlayerDto.getYourInfo().setHand(
+        infoForPlayerDto.getYourInfoDto().setHand(
                 cardDtoList
         );
 
-        infoForPlayerDto.getYourInfo().setTable(
-                MainP.getCardsOnTable()
+        infoForPlayerDto.getYourInfoDto().setTable(
+                mainPlayer.getCardsOnTable()
         );
 
-        infoForPlayerDto.getEnemyInfo().setTable(
-                WorkP.getCardsOnTable()
+        infoForPlayerDto.getEnemyInfoDto().setTable(
+                workPlayer.getCardsOnTable()
         );
 
-        infoForPlayerDto.getEnemyInfo().setHand(
-                WorkP.getCardsOnHand().size()
+        infoForPlayerDto.getEnemyInfoDto().setHand(
+                workPlayer.getCardsOnHand().size()
         );
 
 
-        infoForPlayerDto.getYourInfo().setNickname(MainP.getId());
-        infoForPlayerDto.getEnemyInfo().setNickname(WorkP.getId());
+        infoForPlayerDto.getYourInfoDto().setNickname(mainPlayer.getId());
+        infoForPlayerDto.getEnemyInfoDto().setNickname(workPlayer.getId());
 
-        infoForPlayerDto.getYourInfo().setHp(MainP.getHp());
-        infoForPlayerDto.getYourInfo().setMana(MainP.getMana());
-        infoForPlayerDto.getEnemyInfo().setHp(WorkP.getHp());
-        infoForPlayerDto.getEnemyInfo().setMana(WorkP.getMana());
+        infoForPlayerDto.getYourInfoDto().setHp(mainPlayer.getHp());
+        infoForPlayerDto.getYourInfoDto().setMana(mainPlayer.getMana());
+        infoForPlayerDto.getEnemyInfoDto().setHp(workPlayer.getHp());
+        infoForPlayerDto.getEnemyInfoDto().setMana(workPlayer.getMana());
 
         infoForPlayerDto.setHover(
                 gameTableEntity.getHover()
         );
+
+
+        cardDtoList =
+                mainPlayer.getDropedSpells()
+                        .stream()
+                        .map(
+                                c -> new CardDto(c)
+                        )
+                        .collect(
+                                Collectors.toList()
+                        );
+        infoForPlayerDto.getYourInfoDto().setDropedCards(cardDtoList);
+
+
+        cardDtoList =
+                workPlayer.getDropedSpells()
+                        .stream()
+                        .map(
+                                c -> new CardDto(c)
+                        )
+                        .collect(
+                                Collectors.toList()
+                        );
+        infoForPlayerDto.getEnemyInfoDto().setDropedCards(cardDtoList);
 
         return infoForPlayerDto;
     }

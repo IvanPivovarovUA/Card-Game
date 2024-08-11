@@ -16,6 +16,7 @@ public class PlayerEntity {
     private int mana;// 0 - 10
     private List<Card> cardsOnHand;
     private List<CardOnTableEntity> cardsOnTable;
+    private List<Card> dropedSpells;
 
     public void plusHp(int hp) {
         this.hp += hp;

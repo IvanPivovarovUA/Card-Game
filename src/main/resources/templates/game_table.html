@@ -3,28 +3,36 @@
 <head>
     <title>Page Title</title>
 <!--    <link rel="stylesheet" href="../static/game_table.css">-->
-    <link rel="stylesheet" href="game_table.css">
-
+    <link rel="stylesheet" href="/game_table.css">
+    <link rel="stylesheet" href="/menu_buttons.css">
 
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
-    <script src="game_table.js"></script>
+    <script src="/game_table.js"></script>
 
-
+    <script src="/options.js"></script>
+    <script src="/set_info.js"></script>
 </head>
     <body>
 
     <div class="table">
         <div class="block_centre">
-            <div id="enemy" class="player_bord redborder"></div>
+            <div id="enemy" class="player_bord"></div>
             <div class="card_list" id="eh"></div>
         </div>
 
-        <div class="card_on_table_list" id="et"></div>
+        <div class="block_centre">
+            <div id='ed' class='dropcard'></div>
+            <div class="card_on_table_list" id="et"></div>
+        </div>
 
         <div class="strip"></div>
 
-        <div class="card_on_table_list" id="yt"></div>
+        <div class="block_centre">
+            <div id='yd' class='dropcard'></div>
+
+            <div class="card_on_table_list" id="yt"></div>
+        </div>
 
         <div class="block_centre">
             <div id="you" class="player_bord"></div>

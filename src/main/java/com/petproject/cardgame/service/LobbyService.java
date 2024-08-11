@@ -2,7 +2,6 @@ package com.petproject.cardgame.service;
 
 import com.petproject.cardgame.entity.*;
 import com.petproject.cardgame.repository.GameTableRepository;
-import com.petproject.cardgame.service.game_process.UseCardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.petproject.cardgame.model.Card;
@@ -107,7 +106,8 @@ public class LobbyService {
                         30,
                         10,
                         new ArrayList<Card>(),
-                        new ArrayList<CardOnTableEntity>()
+                        new ArrayList<CardOnTableEntity>(),
+                        new ArrayList<Card>()
                 )
             );
             gameTableEntity.getLobby().remove(RandomNumber);
@@ -119,7 +119,8 @@ public class LobbyService {
                         30,
                         10,
                         new ArrayList<Card>(),
-                        new ArrayList<CardOnTableEntity>()
+                        new ArrayList<CardOnTableEntity>(),
+                        new ArrayList<Card>()
                 )
             );
             gameTableEntity.getLobby().remove(RandomNumber);

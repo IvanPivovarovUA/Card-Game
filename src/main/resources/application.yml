@@ -10,6 +10,7 @@ spring:
             issuer-uri: http://localhost:8080/realms/CardGameRealm
         registration:
           keycloak:
+#            redirect-uri: http://localhost:8081/login/oauth2/code/keycloak
             client-id: card-game-client
             client-secret: bcWtQ9ZG4Bq4A0R6ND9Iagfi1Y5xlzvk
             scope: openid

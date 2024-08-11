@@ -2,7 +2,7 @@ package com.petproject.cardgame.controller;
 
 import com.petproject.cardgame.model.UserHoverCardModel;
 import com.petproject.cardgame.service.game_process.CardHoverService;
-import com.petproject.cardgame.service.game_process.UseCardService;
+import com.petproject.cardgame.service.game_process.card_use.CardUseService;
 import com.petproject.cardgame.service.game_process.GameProcessService;
 import com.petproject.cardgame.service.LobbyService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class GameProcessController {
     private GameProcessService gameProcessService;
 
     @Autowired
-    private UseCardService useCardService;
+    private CardUseService cardUseService;
 
     @Autowired
     private CardHoverService cardHoverService;
@@ -76,7 +76,7 @@ public class GameProcessController {
     public void next(Principal principal) {
         if (gameProcessService.isUserHaveExec(principal.getName())) {
             gameProcessService.nextPlayerStep();
-            useCardService.addCardInHand();
+            cardUseService.addCardInHand();
             cardHoverService.reset();
             sendGameTableInfo();
         }

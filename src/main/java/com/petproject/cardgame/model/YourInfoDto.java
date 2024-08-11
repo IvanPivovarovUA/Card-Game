@@ -6,14 +6,15 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class EnemyInfo {
+public class YourInfoDto {
 
-    public Integer hand;
+    public List<CardDto> hand;
     public List<CardOnTableEntity> table;
+    public List<CardDto> dropedCards;
 
     public String nickname;
 
-    private Integer hp;
-    private Integer mana;
+    public Integer hp;
+    public Integer mana;
 
 }

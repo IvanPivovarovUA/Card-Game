@@ -5,8 +5,8 @@ import lombok.Data;
 
 @Data
 public class InfoForPlayerDto {
-    public YourInfo yourInfo;
-    public EnemyInfo enemyInfo;
+    public YourInfoDto yourInfoDto;
+    public EnemyInfoDto enemyInfoDto;
     public Boolean isYourStep;
     public HoverEntity hover;
 }
