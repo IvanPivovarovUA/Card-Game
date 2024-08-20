@@ -1,12 +1,3 @@
-.faded_button {
-    background: #808080;
-    color:black;
-}
-
-.active_button {
-    background: #EBBF11;
-}
-
 
 .strip #reset {
     position: absolute;
@@ -74,3 +65,13 @@
 }
 
 
+
+
+.faded_button {
+    background: #808080;
+    color:black;
+}
+
+.active_button {
+    background: #EBBF11;
+}

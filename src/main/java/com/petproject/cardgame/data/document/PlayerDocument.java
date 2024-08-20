@@ -1,6 +1,6 @@
-package com.petproject.cardgame.entity;
+package com.petproject.cardgame.data.document;
 
-import com.petproject.cardgame.model.Card;
+import com.petproject.cardgame.data.model.Card;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -8,14 +8,14 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class PlayerEntity {
+public class PlayerDocument {
 
-    public String id;
+    private UserInfoDocument userInfo;
 
-    private int hp;// 0 - 25
-    private int mana;// 0 - 10
+    private Integer hp;// 0 - 25
+    private Integer mana;// 0 - 10
     private List<Card> cardsOnHand;
-    private List<CardOnTableEntity> cardsOnTable;
+    private List<CardOnTableDocument> cardsOnTable;
     private List<Card> dropedSpells;
 
     public void plusHp(int hp) {

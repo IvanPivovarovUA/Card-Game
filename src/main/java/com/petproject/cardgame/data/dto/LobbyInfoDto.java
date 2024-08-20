@@ -1,4 +1,4 @@
-package com.petproject.cardgame.model;
+package com.petproject.cardgame.data.dto;
 
 import lombok.Data;
 

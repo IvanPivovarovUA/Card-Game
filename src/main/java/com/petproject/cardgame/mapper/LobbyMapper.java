@@ -1,36 +1,55 @@
 package com.petproject.cardgame.mapper;
 
-import com.petproject.cardgame.entity.GameTableEntity;
-import com.petproject.cardgame.model.LobbyInfoDto;
+import com.petproject.cardgame.data.document.GameTableDocument;
+import com.petproject.cardgame.data.dto.LobbyInfoDto;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
 
 public class LobbyMapper {
-    static public LobbyInfoDto gametTableToLobbyInfoDto(GameTableEntity gameTableEntity) {
+    static public LobbyInfoDto gametTableToLobbyInfoDto(GameTableDocument gameTableDocument) {
         LobbyInfoDto lobbyInfoDto = new LobbyInfoDto();
 
-        lobbyInfoDto.setWinner(gameTableEntity.getWinner());
+        lobbyInfoDto.setWinner(gameTableDocument.getWinner());
 
         if (
-                gameTableEntity.getFirstPlayer() != null
-                        && gameTableEntity.getFirstPlayer().getId() != null
+                gameTableDocument.getFirstPlayer() != null
+                        && gameTableDocument.getFirstPlayer().getUserInfo().getId() != null
         ) {
-            lobbyInfoDto.setFirstPlayerId(gameTableEntity.getFirstPlayer().getId());
+            lobbyInfoDto.setFirstPlayerId(
+                    gameTableDocument
+                            .getFirstPlayer()
+                            .getUserInfo()
+                            .getNickname()
+            );
         }
         else {
             lobbyInfoDto.setFirstPlayerId("");
         }
 
         if (
-                gameTableEntity.getSecondPlayer() != null
-                        && gameTableEntity.getSecondPlayer().getId() != null
+                gameTableDocument.getSecondPlayer() != null
+                        && gameTableDocument.getSecondPlayer().getUserInfo().getId() != null
         ) {
-            lobbyInfoDto.setSecondPlayerId(gameTableEntity.getSecondPlayer().getId());
+            lobbyInfoDto.setSecondPlayerId(
+                    gameTableDocument
+                            .getSecondPlayer()
+                            .getUserInfo()
+                            .getNickname()
+            );
         }
         else {
             lobbyInfoDto.setSecondPlayerId("");
         }
 
-        lobbyInfoDto.setLobby(gameTableEntity.getLobby());
+        lobbyInfoDto.setLobby(
+                gameTableDocument.getLobby()
+                        .stream()
+                        .map(i -> i.getNickname())
+                        .toList()
+        );
 
         return lobbyInfoDto;
     }
+
 }

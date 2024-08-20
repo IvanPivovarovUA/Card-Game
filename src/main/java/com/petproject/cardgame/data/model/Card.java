@@ -1,10 +1,12 @@
-package com.petproject.cardgame.model;
+package com.petproject.cardgame.data.model;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
 
 @Getter
 public enum Card {
@@ -43,6 +45,7 @@ public enum Card {
 
     private static final Random PRNG = new Random();
 
+
     public static Card randomCard()  {
 
         List<Card> cards = new ArrayList<>();
@@ -59,6 +62,9 @@ public enum Card {
 
         return cards.get(PRNG.nextInt(cards.size()));
     }
+
+
+
 
     public static List<Card> getArmorCards() {
         List<Card> armorCards = new ArrayList<>();

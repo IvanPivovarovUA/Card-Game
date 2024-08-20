@@ -1,11 +1,15 @@
 package com.petproject.cardgame.controller;
 
+import com.petproject.cardgame.data.dto.LobbyInfoDto;
 import com.petproject.cardgame.service.LobbyService;
 import com.petproject.cardgame.service.game_process.card_use.CardUseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.annotation.SendToUser;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
@@ -33,19 +37,16 @@ public class LobbyController {
                 gametTableToLobbyInfoDto(lobbyService.getGameTable())
         );
     }
+    public void redirectToLobby() {
+        template.convertAndSend(
+                "/topic/redirect_to_game_table",
+                ""
+        );
+    }
 
     @GetMapping("/lobby")
     public String getLobbyPage(Principal principal) {
-
-        if (lobbyService.isUserInGame(principal.getName())) {
-            return "redirect:game_table";
-        }
-        else if (lobbyService.isUserInLobby(principal.getName())) {
-            return "redirect:";
-        } else {
-            return "lobby";
-        }
-
+        return "lobby";
     }
 
     @MessageMapping("/get_lobby_info")
@@ -64,25 +65,30 @@ public class LobbyController {
             for (int i = 0; i < 6; i++) {
                 cardUseService.addCardInHand(false);
             }
-
-            sendLobbyInfo();
+//            sendLobbyInfo();
+            redirectToLobby();
         }
     }
 
     @EventListener
     public void userConnectToLobby(SessionConnectEvent event) {
-        if (
-                !lobbyService.isUserInGame(event.getUser().getName())
-                && !lobbyService.isUserInLobby(event.getUser().getName())
-        ) {
-            lobbyService.addUserInLobby(event.getUser().getName());
-            sendLobbyInfo();
-        }
+        OAuth2AuthenticationToken principal =  (OAuth2AuthenticationToken) event.getUser();
+
+        String userId = principal.getPrincipal().getAttribute("sub").toString();
+        String userNickName = principal.getPrincipal().getAttribute("given_name").toString();
+
+        lobbyService.addUserInLobby(userId, userNickName);
+        sendLobbyInfo();
     }
 
     @EventListener
     public void userDisconnectToLobby(SessionDisconnectEvent event) {
-        lobbyService.removeUserFromLobby(event.getUser().getName());
+        OAuth2AuthenticationToken principal =  (OAuth2AuthenticationToken) event.getUser();
+
+        String userId = principal.getPrincipal().getAttribute("sub").toString();
+        String userNickName = principal.getPrincipal().getAttribute("given_name").toString();
+
+        lobbyService.removeUserFromLobby(userId, userNickName);
         sendLobbyInfo();
     }
 }

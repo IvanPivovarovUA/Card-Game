@@ -1,31 +1,35 @@
 package com.petproject.cardgame.mapper;
 
-import com.petproject.cardgame.entity.GameTableEntity;
-import com.petproject.cardgame.entity.PlayerEntity;
-import com.petproject.cardgame.model.*;
+import com.petproject.cardgame.data.document.GameTableDocument;
+import com.petproject.cardgame.data.document.PlayerDocument;
+import com.petproject.cardgame.data.dto.CardDto;
+import com.petproject.cardgame.data.dto.EnemyInfoDto;
+import com.petproject.cardgame.data.dto.InfoForPlayerDto;
+import com.petproject.cardgame.data.dto.YourInfoDto;
+
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class GameTableMapper {
 
-    static public InfoForPlayerDto GameTableToInfoForPlayer(GameTableEntity gameTableEntity, boolean isItInfoForFirstPlayer) {
+    static public InfoForPlayerDto GameTableToInfoForPlayer(GameTableDocument gameTableDocument, boolean isItInfoForFirstPlayer) {
         InfoForPlayerDto infoForPlayerDto = new InfoForPlayerDto();
-        infoForPlayerDto.setYourInfoDto(new YourInfoDto());
-        infoForPlayerDto.setEnemyInfoDto(new EnemyInfoDto());
+        infoForPlayerDto.setYourInfo(new YourInfoDto());
+        infoForPlayerDto.setEnemyInfo(new EnemyInfoDto());
 
-        PlayerEntity mainPlayer;
-        PlayerEntity workPlayer;
+        PlayerDocument mainPlayer;
+        PlayerDocument workPlayer;
         if (isItInfoForFirstPlayer) {
-            mainPlayer = gameTableEntity.getFirstPlayer();
-            workPlayer = gameTableEntity.getSecondPlayer();
-            infoForPlayerDto.setIsYourStep(gameTableEntity.getIsFirstPlayerStep());
+            mainPlayer = gameTableDocument.getFirstPlayer();
+            workPlayer = gameTableDocument.getSecondPlayer();
+            infoForPlayerDto.setIsYourStep(gameTableDocument.getIsFirstPlayerStep());
 
         }
         else {
-            mainPlayer = gameTableEntity.getSecondPlayer();
-            workPlayer = gameTableEntity.getFirstPlayer();
-            infoForPlayerDto.setIsYourStep(!gameTableEntity.getIsFirstPlayerStep());
+            mainPlayer = gameTableDocument.getSecondPlayer();
+            workPlayer = gameTableDocument.getFirstPlayer();
+            infoForPlayerDto.setIsYourStep(!gameTableDocument.getIsFirstPlayerStep());
         }
 
         List<CardDto> cardDtoList =
@@ -38,33 +42,33 @@ public class GameTableMapper {
                         Collectors.toList()
                 );
 
-        infoForPlayerDto.getYourInfoDto().setHand(
+        infoForPlayerDto.getYourInfo().setHand(
                 cardDtoList
         );
 
-        infoForPlayerDto.getYourInfoDto().setTable(
+        infoForPlayerDto.getYourInfo().setTable(
                 mainPlayer.getCardsOnTable()
         );
 
-        infoForPlayerDto.getEnemyInfoDto().setTable(
+        infoForPlayerDto.getEnemyInfo().setTable(
                 workPlayer.getCardsOnTable()
         );
 
-        infoForPlayerDto.getEnemyInfoDto().setHand(
+        infoForPlayerDto.getEnemyInfo().setHand(
                 workPlayer.getCardsOnHand().size()
         );
 
 
-        infoForPlayerDto.getYourInfoDto().setNickname(mainPlayer.getId());
-        infoForPlayerDto.getEnemyInfoDto().setNickname(workPlayer.getId());
+        infoForPlayerDto.getYourInfo().setNickname(mainPlayer.getUserInfo().getNickname());
+        infoForPlayerDto.getEnemyInfo().setNickname(workPlayer.getUserInfo().getNickname());
 
-        infoForPlayerDto.getYourInfoDto().setHp(mainPlayer.getHp());
-        infoForPlayerDto.getYourInfoDto().setMana(mainPlayer.getMana());
-        infoForPlayerDto.getEnemyInfoDto().setHp(workPlayer.getHp());
-        infoForPlayerDto.getEnemyInfoDto().setMana(workPlayer.getMana());
+        infoForPlayerDto.getYourInfo().setHp(mainPlayer.getHp());
+        infoForPlayerDto.getYourInfo().setMana(mainPlayer.getMana());
+        infoForPlayerDto.getEnemyInfo().setHp(workPlayer.getHp());
+        infoForPlayerDto.getEnemyInfo().setMana(workPlayer.getMana());
 
         infoForPlayerDto.setHover(
-                gameTableEntity.getHover()
+                gameTableDocument.getHover()
         );
 
 
@@ -77,7 +81,7 @@ public class GameTableMapper {
                         .collect(
                                 Collectors.toList()
                         );
-        infoForPlayerDto.getYourInfoDto().setDropedCards(cardDtoList);
+        infoForPlayerDto.getYourInfo().setDropedCards(cardDtoList);
 
 
         cardDtoList =
@@ -89,7 +93,7 @@ public class GameTableMapper {
                         .collect(
                                 Collectors.toList()
                         );
-        infoForPlayerDto.getEnemyInfoDto().setDropedCards(cardDtoList);
+        infoForPlayerDto.getEnemyInfo().setDropedCards(cardDtoList);
 
         return infoForPlayerDto;
     }

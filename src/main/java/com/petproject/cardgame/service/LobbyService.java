@@ -1,12 +1,13 @@
 package com.petproject.cardgame.service;
 
-import com.petproject.cardgame.entity.*;
+import com.petproject.cardgame.data.document.*;
 import com.petproject.cardgame.repository.GameTableRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.petproject.cardgame.model.Card;
+import com.petproject.cardgame.data.model.Card;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.Optional;
 
@@ -17,35 +18,40 @@ public class LobbyService {
     @Autowired
     private GameTableRepository gameTableRepository;
 
-    public GameTableEntity getGameTable() {
-        Optional<GameTableEntity> gameTableEntityOptional = gameTableRepository.findById("1");
+    public GameTableDocument getGameTable() {
+        Optional<GameTableDocument> gameTableEntityOptional = gameTableRepository.findById("1");
 
         if (gameTableEntityOptional.isEmpty()) {
-            GameTableEntity gameTableEntity = new GameTableEntity();
-            gameTableRepository.save(gameTableEntity);
+            GameTableDocument gameTableDocument = new GameTableDocument();
+            gameTableRepository.save(gameTableDocument);
 
-            return gameTableEntity;
+            return gameTableDocument;
         }
         else {
             return gameTableEntityOptional.get();
         }
     }
 
+    public boolean isGameContinues() {
+        GameTableDocument gameTableDocument = getGameTable();
+        return gameTableDocument.getIsGameContinues();
+    }
+
     public boolean isUserInGame(String UserId) {
-        GameTableEntity gameTableEntity = getGameTable();
+        GameTableDocument gameTableDocument = getGameTable();
 
         if (
-                null != gameTableEntity.getFirstPlayer()
-            && null != gameTableEntity.getFirstPlayer().getId()
-            && gameTableEntity.getFirstPlayer().getId().equals(UserId)
+                null != gameTableDocument.getFirstPlayer()
+            && null != gameTableDocument.getFirstPlayer().getUserInfo().getId()
+            && gameTableDocument.getFirstPlayer().getUserInfo().getId().equals(UserId)
         ) {
             return true;
         }
 
         if (
-                null != gameTableEntity.getSecondPlayer()
-            && null != gameTableEntity.getSecondPlayer().getId()
-            && gameTableEntity.getSecondPlayer().getId().equals(UserId)
+                null != gameTableDocument.getSecondPlayer()
+            && null != gameTableDocument.getSecondPlayer().getUserInfo().getId()
+            && gameTableDocument.getSecondPlayer().getUserInfo().getId().equals(UserId)
         ) {
             return true;
         }
@@ -54,78 +60,88 @@ public class LobbyService {
     }
 
     public boolean isUserInLobby(String UserId) {
-        GameTableEntity gameTableEntity = getGameTable();
-        if (
-                gameTableEntity.getLobby().contains(UserId)
+        GameTableDocument gameTableDocument = getGameTable();
+
+        for (UserInfoDocument userInfoDocument: gameTableDocument.getLobby()) {
+            if (
+                    userInfoDocument.getId().equals(UserId)
             ) {
-            return true;
+                return true;
+            }
         }
 
         return false;
     }
 
-    public void addUserInLobby(String UserId) {
-        GameTableEntity gameTableEntity = getGameTable();
-        gameTableEntity.getLobby().add(UserId);
-        gameTableRepository.save(gameTableEntity);
+    public void addUserInLobby(String userId, String userNickName) {
+        GameTableDocument gameTableDocument = getGameTable();
+
+        gameTableDocument.getLobby().add(
+                new UserInfoDocument(userId, userNickName)
+        );
+
+        gameTableRepository.save(gameTableDocument);
     }
 
-    public void removeUserFromLobby(String UserId) {
-        GameTableEntity gameTableEntity = getGameTable();
-        gameTableEntity.getLobby().remove(UserId);
-        gameTableRepository.save(gameTableEntity);
+    public void removeUserFromLobby(String userId, String userNickName) {
+        GameTableDocument gameTableDocument = getGameTable();
+        gameTableDocument.getLobby().remove(
+                new UserInfoDocument(userId, userNickName)
+        );
+        gameTableRepository.save(gameTableDocument);
     }
 
     public boolean canIStartGame() {
-        GameTableEntity gameTableEntity = getGameTable();
-        return !gameTableEntity.getIsGameContinues()
-                && gameTableEntity.getLobby().size() >= 2;
+        GameTableDocument gameTableDocument = getGameTable();
+        return !gameTableDocument.getIsGameContinues()
+                && gameTableDocument.getLobby().size() >= 2;
     }
 
     public void startGame() {
-        GameTableEntity gameTableEntity = getGameTable();
+        GameTableDocument gameTableDocument = getGameTable();
 
         if (
-                !gameTableEntity.getIsGameContinues()
-                && gameTableEntity.getLobby().size() >= 2
+                !isGameContinues()
+                && gameTableDocument.getLobby().size() >= 2
         ) {
 
-            gameTableEntity.setIsGameContinues(true);
-            gameTableEntity.setIsFirstPlayerStep(true);
-            gameTableEntity.setHover(new HoverEntity());
-            gameTableEntity.setWinner("?");
+            gameTableDocument.setIsGameContinues(true);
+            gameTableDocument.setIsFirstPlayerStep(true);
+            gameTableDocument.setHover(new HoverDocument());
+            gameTableDocument.setWinner("?");
 
 
+            List<UserInfoDocument> lobby =  new ArrayList<>(gameTableDocument.getLobby());
             Random PRNG = new Random();
             int RandomNumber;
 
-            RandomNumber = PRNG.nextInt(gameTableEntity.getLobby().size());
-            gameTableEntity.setFirstPlayer(
-                new PlayerEntity(
-                        gameTableEntity.getLobby().get(RandomNumber),
+            RandomNumber = PRNG.nextInt(lobby.size());
+            gameTableDocument.setFirstPlayer(
+                new PlayerDocument(
+                        lobby.get(RandomNumber),
                         30,
                         10,
                         new ArrayList<Card>(),
-                        new ArrayList<CardOnTableEntity>(),
+                        new ArrayList<CardOnTableDocument>(),
                         new ArrayList<Card>()
                 )
             );
-            gameTableEntity.getLobby().remove(RandomNumber);
+            lobby.remove(RandomNumber);
 
-            RandomNumber = PRNG.nextInt(gameTableEntity.getLobby().size());
-            gameTableEntity.setSecondPlayer(
-                new PlayerEntity(
-                        gameTableEntity.getLobby().get(RandomNumber),
+            RandomNumber = PRNG.nextInt(lobby.size());
+            gameTableDocument.setSecondPlayer(
+                new PlayerDocument(
+                        lobby.get(RandomNumber),
                         30,
                         10,
                         new ArrayList<Card>(),
-                        new ArrayList<CardOnTableEntity>(),
+                        new ArrayList<CardOnTableDocument>(),
                         new ArrayList<Card>()
                 )
             );
-            gameTableEntity.getLobby().remove(RandomNumber);
+            lobby.remove(RandomNumber);
 
-            gameTableRepository.save(gameTableEntity);
+            gameTableRepository.save(gameTableDocument);
         }
     }
 }

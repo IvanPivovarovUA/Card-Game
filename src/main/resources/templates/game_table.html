@@ -5,6 +5,7 @@
 <!--    <link rel="stylesheet" href="../static/game_table.css">-->
     <link rel="stylesheet" href="/game_table.css">
     <link rel="stylesheet" href="/menu_buttons.css">
+    <link rel="stylesheet" href="/border.css">
 
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
@@ -17,12 +18,18 @@
 
     <div class="table">
         <div class="block_centre">
-            <div id="enemy" class="player_bord"></div>
+            <div id="enemy" class="player_bord">
+                <div class="box1"></div>
+                <div class="box2" id="en"></div>
+                <div class="box3" id="ehp"></div>
+                <div class="box4" id="em"></div>
+                <div class="hitblock_for_playerbord"> -5 </div>
+            </div>
             <div class="card_list" id="eh"></div>
         </div>
 
         <div class="block_centre">
-            <div id='ed' class='dropcard'></div>
+            <div id='ed' class='dropcard_up'></div>
             <div class="card_on_table_list" id="et"></div>
         </div>
 
@@ -35,7 +42,13 @@
         </div>
 
         <div class="block_centre">
-            <div id="you" class="player_bord"></div>
+            <div id="you" class="player_bord">
+                <div class="box1"></div>
+                <div class="box2" id="yn"></div>
+                <div class="box3" id="yhp"></div>
+                <div class="box4" id="ym"></div>
+                <div class="hitblock_for_playerbord"> -5 </div>
+            </div>
             <div class="card_list" id="yh"></div>
         </div>
 

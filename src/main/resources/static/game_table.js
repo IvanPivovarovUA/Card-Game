@@ -11,6 +11,10 @@ stompClient.onConnect = (frame) => {
         editHtml(JSON.parse(greeting.body));
     });
 
+    stompClient.subscribe('/queue/redirect_to_lobby', (greeting) => {
+        redirectToLobby();
+    });
+
     getGameTableInfo();
 
 };
@@ -63,8 +67,7 @@ function setHover(index, place) {
         destination: "/app/hover",
         body: JSON.stringify({"index": index, "place": place})
     });
-    console.log(index);
-    console.log(place);
+
 }
 
 function reset() {
@@ -83,6 +86,9 @@ function use_card() {
     });
 }
 
+function redirectToLobby() {
+    document.location.href = "http://localhost:8081/lobby";
+}
 
 
 ////////////////////////

@@ -1,11 +1,13 @@
 package com.petproject.cardgame.service.game_process;
 
-import com.petproject.cardgame.entity.CardOnTableEntity;
-import com.petproject.cardgame.entity.GameTableEntity;
-import com.petproject.cardgame.entity.PlayerEntity;
+import com.petproject.cardgame.data.document.CardOnTableDocument;
+import com.petproject.cardgame.data.document.GameTableDocument;
+import com.petproject.cardgame.data.document.PlayerDocument;
 import com.petproject.cardgame.repository.GameTableRepository;
 import com.petproject.cardgame.service.game_process.card_use.CardUseAccessService;
 import com.petproject.cardgame.service.game_process.card_use.CardUseService;
+import com.petproject.cardgame.service.game_process.card_use.OneClickSpellService;
+import com.petproject.cardgame.service.game_process.card_use.TwoClickSpellService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,27 +30,32 @@ public class GameProcessService {
     TwoClickSpellService twoClickSpellService;
 
     public String getFirstPlayerId() {
-        GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();
-        return gameTableEntity.getFirstPlayer().getId();
+        GameTableDocument gameTableDocument = gameTableRepository.findById("1").get();
+        return gameTableDocument.getFirstPlayer().getUserInfo().getId();
     }
 
     public String getSecondPlayerId() {
-        GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();
-        return gameTableEntity.getSecondPlayer().getId();
+        GameTableDocument gameTableDocument = gameTableRepository.findById("1").get();
+        return gameTableDocument.getSecondPlayer().getUserInfo().getId();
     }
 
     public boolean isUserHaveExec(String UserId) {
-        GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();
+        GameTableDocument gameTableDocument = gameTableRepository.findById("1").get();
+
+        if (!gameTableDocument.getIsGameContinues())
+        {
+            return false;
+        }
 
         if (
-                gameTableEntity.getFirstPlayer().getId().equals(UserId)
-                && gameTableEntity.getIsFirstPlayerStep()
+                gameTableDocument.getFirstPlayer().getUserInfo().getId().equals(UserId)
+                && gameTableDocument.getIsFirstPlayerStep()
         ) {
             return true;
         }
         else if (
-                gameTableEntity.getSecondPlayer().getId().equals(UserId)
-                && !gameTableEntity.getIsFirstPlayerStep()
+                gameTableDocument.getSecondPlayer().getUserInfo().getId().equals(UserId)
+                && !gameTableDocument.getIsFirstPlayerStep()
         ) {
             return true;
         }
@@ -58,53 +65,53 @@ public class GameProcessService {
     }
 
     public void nextPlayerStep() {
-        GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();
+        GameTableDocument gameTableDocument = gameTableRepository.findById("1").get();
 
-        if (gameTableEntity.getIsFirstPlayerStep()) {
-            gameTableEntity.setIsFirstPlayerStep(false);
-            gameTableEntity.getSecondPlayer().setMana(10);
-            for (CardOnTableEntity cardOnTableEntity : gameTableEntity.getSecondPlayer().getCardsOnTable()) {
-                if (!cardOnTableEntity.getType().name().equals("W")) {
-                    cardOnTableEntity.setCanAttack(true);
+        if (gameTableDocument.getIsFirstPlayerStep()) {
+            gameTableDocument.setIsFirstPlayerStep(false);
+            gameTableDocument.getSecondPlayer().setMana(10);
+            for (CardOnTableDocument cardOnTableDocument : gameTableDocument.getSecondPlayer().getCardsOnTable()) {
+                if (!cardOnTableDocument.getType().name().equals("W")) {
+                    cardOnTableDocument.setCanAttack(true);
                 }
             }
-            for (CardOnTableEntity cardOnTableEntity : gameTableEntity.getFirstPlayer().getCardsOnTable()) {
-                if (!cardOnTableEntity.getType().name().equals("W")) {
-                    cardOnTableEntity.setCanAttack(false);
+            for (CardOnTableDocument cardOnTableDocument : gameTableDocument.getFirstPlayer().getCardsOnTable()) {
+                if (!cardOnTableDocument.getType().name().equals("W")) {
+                    cardOnTableDocument.setCanAttack(false);
                 }
             }
-            gameTableEntity.getFirstPlayer().getDropedSpells().clear();
+            gameTableDocument.getFirstPlayer().getDropedSpells().clear();
         }
         else {
-            gameTableEntity.setIsFirstPlayerStep(true);
-            gameTableEntity.getFirstPlayer().setMana(10);
-            for (CardOnTableEntity cardOnTableEntity : gameTableEntity.getFirstPlayer().getCardsOnTable()) {
-                if (!cardOnTableEntity.getType().name().equals("W")) {
-                    cardOnTableEntity.setCanAttack(true);
+            gameTableDocument.setIsFirstPlayerStep(true);
+            gameTableDocument.getFirstPlayer().setMana(10);
+            for (CardOnTableDocument cardOnTableDocument : gameTableDocument.getFirstPlayer().getCardsOnTable()) {
+                if (!cardOnTableDocument.getType().name().equals("W")) {
+                    cardOnTableDocument.setCanAttack(true);
                 }
             }
-            for (CardOnTableEntity cardOnTableEntity : gameTableEntity.getSecondPlayer().getCardsOnTable()) {
-                if (!cardOnTableEntity.getType().name().equals("W")) {
-                    cardOnTableEntity.setCanAttack(false);
+            for (CardOnTableDocument cardOnTableDocument : gameTableDocument.getSecondPlayer().getCardsOnTable()) {
+                if (!cardOnTableDocument.getType().name().equals("W")) {
+                    cardOnTableDocument.setCanAttack(false);
                 }
             }
-            gameTableEntity.getSecondPlayer().getDropedSpells().clear();
+            gameTableDocument.getSecondPlayer().getDropedSpells().clear();
         }
 
-        gameTableRepository.save(gameTableEntity);
+        gameTableRepository.save(gameTableDocument);
     }
 
 
 
     public boolean useCard() {
-        GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();
-        int index = gameTableEntity.getHover().getHand();
-        PlayerEntity mainPlayer;
-        if (gameTableEntity.getIsFirstPlayerStep()) {
-            mainPlayer = gameTableEntity.getFirstPlayer();
+        GameTableDocument gameTableDocument = gameTableRepository.findById("1").get();
+        int index = gameTableDocument.getHover().getHand();
+        PlayerDocument mainPlayer;
+        if (gameTableDocument.getIsFirstPlayerStep()) {
+            mainPlayer = gameTableDocument.getFirstPlayer();
         }
         else {
-            mainPlayer = gameTableEntity.getSecondPlayer();
+            mainPlayer = gameTableDocument.getSecondPlayer();
         }
 
 
@@ -181,11 +188,34 @@ public class GameProcessService {
     }
 
 
+    public boolean checkAndDoGameOver() {
+        GameTableDocument gameTableDocument = gameTableRepository.findById("1").get();
 
+        if (
+                gameTableDocument.getFirstPlayer().getHp() <= 0
 
+        ) {
+            gameTableDocument.setWinner(
+                    gameTableDocument.getFirstPlayer().getUserInfo().getNickname()
+            );
+        }
 
+        if (
+                gameTableDocument.getSecondPlayer().getHp() <= 0
+        ) {
+            gameTableDocument.setWinner(
+                    gameTableDocument.getSecondPlayer().getUserInfo().getNickname()
+            );
+        }
 
-
-
-
+        if (
+                gameTableDocument.getFirstPlayer().getHp() <= 0
+                || gameTableDocument.getSecondPlayer().getHp() <= 0
+        ) {
+            gameTableDocument.setIsGameContinues(false);
+            gameTableRepository.save(gameTableDocument);
+            return true;
+        }
+        return false;
+    }
 }

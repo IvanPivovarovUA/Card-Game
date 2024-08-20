@@ -7,6 +7,9 @@ stompClient.onConnect = (frame) => {
     stompClient.subscribe('/topic/user_list', (greeting) => {
         showGreeting(JSON.parse(greeting.body));
     });
+    stompClient.subscribe('/topic/redirect_to_game_table', (greeting) => {
+        redirectToGameTable();
+    });
 
     getUserList();
 };
@@ -50,6 +53,11 @@ function showGreeting(message) {
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+
+function redirectToGameTable() {
+    document.location.href = "http://localhost:8081/game_table";
 }
 
 $(function () {

@@ -1,14 +1,14 @@
 package com.petproject.cardgame.service.game_process.card_use;
 
-import com.petproject.cardgame.entity.CardOnTableEntity;
-import com.petproject.cardgame.entity.GameTableEntity;
-import com.petproject.cardgame.entity.PlayerEntity;
-import com.petproject.cardgame.model.Card;
+import com.petproject.cardgame.data.document.CardOnTableDocument;
+import com.petproject.cardgame.data.document.GameTableDocument;
+import com.petproject.cardgame.data.document.PlayerDocument;
+import com.petproject.cardgame.data.model.Card;
 import com.petproject.cardgame.repository.GameTableRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import static com.petproject.cardgame.model.Card.getArmorCards;
+import static com.petproject.cardgame.data.model.Card.getArmorCards;
 
 @Service
 public class CardUseAccessService {
@@ -17,19 +17,19 @@ public class CardUseAccessService {
     GameTableRepository gameTableRepository;
 
     public boolean canIAttackCard() {
-        GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();
-        int tableIndex = gameTableEntity.getHover().getTable();
-        int enemyIndex = gameTableEntity.getHover().getEnemy();
-        PlayerEntity mainPlayer;
-        if (gameTableEntity.getIsFirstPlayerStep()) {
-            mainPlayer = gameTableEntity.getFirstPlayer();
+        GameTableDocument gameTableDocument = gameTableRepository.findById("1").get();
+        int tableIndex = gameTableDocument.getHover().getTable();
+        int enemyIndex = gameTableDocument.getHover().getEnemy();
+        PlayerDocument mainPlayer;
+        if (gameTableDocument.getIsFirstPlayerStep()) {
+            mainPlayer = gameTableDocument.getFirstPlayer();
         }
         else {
-            mainPlayer = gameTableEntity.getSecondPlayer();
+            mainPlayer = gameTableDocument.getSecondPlayer();
         }
 
         if (
-                gameTableEntity.getHover().getHand() == -1
+                gameTableDocument.getHover().getHand() == -1
                 && tableIndex != -1
                 && enemyIndex != -1
                 && !isThereAnyArmorCard(enemyIndex)
@@ -44,19 +44,19 @@ public class CardUseAccessService {
     }
 
     public boolean canIAttackPlayer() {
-        GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();
-        PlayerEntity mainPlayer;
-        if (gameTableEntity.getIsFirstPlayerStep()) {
-            mainPlayer = gameTableEntity.getFirstPlayer();
+        GameTableDocument gameTableDocument = gameTableRepository.findById("1").get();
+        PlayerDocument mainPlayer;
+        if (gameTableDocument.getIsFirstPlayerStep()) {
+            mainPlayer = gameTableDocument.getFirstPlayer();
         }
         else {
-            mainPlayer = gameTableEntity.getSecondPlayer();
+            mainPlayer = gameTableDocument.getSecondPlayer();
         }
 
         if (
-                gameTableEntity.getHover().getHand() == -1
-                && gameTableEntity.getHover().getTable() != -1
-                && gameTableEntity.getHover().getPlayer()
+                gameTableDocument.getHover().getHand() == -1
+                && gameTableDocument.getHover().getTable() != -1
+                && gameTableDocument.getHover().getPlayer()
                 && !isThereAnyArmorCard()
         ) {
             return true;
@@ -66,15 +66,15 @@ public class CardUseAccessService {
 
 
     public boolean isThereEnoughMana() {
-        GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();
-        int index = gameTableEntity.getHover().getHand();
+        GameTableDocument gameTableDocument = gameTableRepository.findById("1").get();
+        int index = gameTableDocument.getHover().getHand();
 
-        PlayerEntity mainPlayer;
-        if (gameTableEntity.getIsFirstPlayerStep()) {
-            mainPlayer = gameTableEntity.getFirstPlayer();
+        PlayerDocument mainPlayer;
+        if (gameTableDocument.getIsFirstPlayerStep()) {
+            mainPlayer = gameTableDocument.getFirstPlayer();
         }
         else {
-            mainPlayer = gameTableEntity.getSecondPlayer();
+            mainPlayer = gameTableDocument.getSecondPlayer();
         }
 
         return index != -1 && mainPlayer.getCardsOnHand().get(index).getMana() <= mainPlayer.getMana();
@@ -82,14 +82,14 @@ public class CardUseAccessService {
 
 
     public boolean isThereAnyArmorCard(int index) {
-        GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();
+        GameTableDocument gameTableDocument = gameTableRepository.findById("1").get();
 
-        PlayerEntity workPlayer;
-        if (gameTableEntity.getIsFirstPlayerStep()) {
-            workPlayer = gameTableEntity.getSecondPlayer();
+        PlayerDocument workPlayer;
+        if (gameTableDocument.getIsFirstPlayerStep()) {
+            workPlayer = gameTableDocument.getSecondPlayer();
         }
         else {
-            workPlayer = gameTableEntity.getFirstPlayer();
+            workPlayer = gameTableDocument.getFirstPlayer();
         }
 
         for (Card card : getArmorCards()) {
@@ -101,10 +101,10 @@ public class CardUseAccessService {
         }
 
 
-        for (CardOnTableEntity cardOnTableEntity: workPlayer.getCardsOnTable()) {
+        for (CardOnTableDocument cardOnTableDocument : workPlayer.getCardsOnTable()) {
             for (Card card : getArmorCards()) {
                 if (
-                        cardOnTableEntity.getType().name().equals(card.name())
+                        cardOnTableDocument.getType().name().equals(card.name())
                 ) {
                     return true;
                 }
@@ -114,20 +114,20 @@ public class CardUseAccessService {
     }
 
     public boolean isThereAnyArmorCard() {
-        GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();
+        GameTableDocument gameTableDocument = gameTableRepository.findById("1").get();
 
-        PlayerEntity workPlayer;
-        if (gameTableEntity.getIsFirstPlayerStep()) {
-            workPlayer = gameTableEntity.getSecondPlayer();
+        PlayerDocument workPlayer;
+        if (gameTableDocument.getIsFirstPlayerStep()) {
+            workPlayer = gameTableDocument.getSecondPlayer();
         }
         else {
-            workPlayer = gameTableEntity.getFirstPlayer();
+            workPlayer = gameTableDocument.getFirstPlayer();
         }
 
-        for (CardOnTableEntity cardOnTableEntity: workPlayer.getCardsOnTable()) {
+        for (CardOnTableDocument cardOnTableDocument : workPlayer.getCardsOnTable()) {
             for (Card card : getArmorCards()) {
                 if (
-                        cardOnTableEntity.getType().name().equals(card.name())
+                        cardOnTableDocument.getType().name().equals(card.name())
                 ) {
                     return true;
                 }

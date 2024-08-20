@@ -1,9 +1,9 @@
 package com.petproject.cardgame.service.game_process.card_use;
 
-import com.petproject.cardgame.entity.CardOnTableEntity;
-import com.petproject.cardgame.entity.GameTableEntity;
-import com.petproject.cardgame.entity.PlayerEntity;
-import com.petproject.cardgame.model.Card;
+import com.petproject.cardgame.data.document.CardOnTableDocument;
+import com.petproject.cardgame.data.document.GameTableDocument;
+import com.petproject.cardgame.data.document.PlayerDocument;
+import com.petproject.cardgame.data.model.Card;
 import com.petproject.cardgame.repository.GameTableRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,34 +20,35 @@ public class CardUseService {
 
 
     public void addCardInHand() {
-        GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();
-        addCardInHand(gameTableEntity.getIsFirstPlayerStep());
+        GameTableDocument gameTableDocument = gameTableRepository.findById("1").get();
+        addCardInHand(gameTableDocument.getIsFirstPlayerStep());
     }
 
     public void addCardInHand(boolean isFirstPlayerStep) {
-        GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();
+        GameTableDocument gameTableDocument = gameTableRepository.findById("1").get();
+        Card card = Card.randomCard();
 
         if (isFirstPlayerStep) {
-            gameTableEntity.getFirstPlayer().getCardsOnHand().add(Card.randomCard());
+            gameTableDocument.getFirstPlayer().getCardsOnHand().add(card);
         }
         else {
-            gameTableEntity.getSecondPlayer().getCardsOnHand().add(Card.randomCard());
+            gameTableDocument.getSecondPlayer().getCardsOnHand().add(card);
         }
 
-        gameTableRepository.save(gameTableEntity);
+        gameTableRepository.save(gameTableDocument);
     }
 
 
     public void removeHoverCardFromHand() {
-        GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();
-        int index = gameTableEntity.getHover().getHand();
+        GameTableDocument gameTableDocument = gameTableRepository.findById("1").get();
+        int index = gameTableDocument.getHover().getHand();
 
-        PlayerEntity mainPlayer;
-        if (gameTableEntity.getIsFirstPlayerStep()) {
-            mainPlayer = gameTableEntity.getFirstPlayer();
+        PlayerDocument mainPlayer;
+        if (gameTableDocument.getIsFirstPlayerStep()) {
+            mainPlayer = gameTableDocument.getFirstPlayer();
         }
         else {
-            mainPlayer = gameTableEntity.getSecondPlayer();
+            mainPlayer = gameTableDocument.getSecondPlayer();
         }
 
         mainPlayer.plusMana(
@@ -55,74 +56,79 @@ public class CardUseService {
         );
         mainPlayer.getCardsOnHand().remove(index);
 
-        gameTableRepository.save(gameTableEntity);
+        gameTableRepository.save(gameTableDocument);
     }
 
 
-    private CardOnTableEntity createCardOnTable(Card card) {
-        CardOnTableEntity cardOnTableEntity = new CardOnTableEntity();
+    private CardOnTableDocument createCardOnTable(Card card, int id) {
+        CardOnTableDocument cardOnTableDocument = new CardOnTableDocument();
 
-        cardOnTableEntity.setType(card);
-        cardOnTableEntity.setHp(card.getHp());
-        cardOnTableEntity.setPower(card.getPower());
+        cardOnTableDocument.setType(card);
+        cardOnTableDocument.setHp(card.getHp());
+        cardOnTableDocument.setPower(card.getPower());
 
         if (
                card.equals(Card.B)
             || card.equals(Card.R)
             || card.equals(Card.r)
         ) {
-            cardOnTableEntity.setCanAttack(true);
+            cardOnTableDocument.setCanAttack(true);
         }
         else {
-            cardOnTableEntity.setCanAttack(false);
+            cardOnTableDocument.setCanAttack(false);
         }
 
-        return cardOnTableEntity;
+        cardOnTableDocument.setId(id);
+
+        return cardOnTableDocument;
     }
 
     public void putCardOnTable() {
-        GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();
+        GameTableDocument gameTableDocument = gameTableRepository.findById("1").get();
 
-        PlayerEntity mainPlayer;
-        if (gameTableEntity.getIsFirstPlayerStep()) {
-            mainPlayer = gameTableEntity.getFirstPlayer();
+        PlayerDocument mainPlayer;
+        if (gameTableDocument.getIsFirstPlayerStep()) {
+            mainPlayer = gameTableDocument.getFirstPlayer();
         }
         else {
-            mainPlayer = gameTableEntity.getSecondPlayer();
+            mainPlayer = gameTableDocument.getSecondPlayer();
         }
+
+        int id = gameTableDocument.getIdForCards();
 
         mainPlayer.getCardsOnTable().add(
                 createCardOnTable(
                         mainPlayer.getCardsOnHand().get(
-                                gameTableEntity.getHover().getHand()
-                        )
+                                gameTableDocument.getHover().getHand()
+                        ),
+                        id
                 )
         );
-        gameTableRepository.save(gameTableEntity);
+        gameTableRepository.save(gameTableDocument);
     }
 
     public void attackCard() {
-        GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();
+        GameTableDocument gameTableDocument = gameTableRepository.findById("1").get();
 
-        int MainCardId = gameTableEntity.getHover().getTable();
-        int WorkCardId = gameTableEntity.getHover().getEnemy();
+        int MainCardId = gameTableDocument.getHover().getTable();
+        int WorkCardId = gameTableDocument.getHover().getEnemy();
 
-        CardOnTableEntity MainC;
-        CardOnTableEntity WorkC;
-        List<CardOnTableEntity> MainCList;
-        List<CardOnTableEntity> WorkCList;
+        CardOnTableDocument MainC;
+        CardOnTableDocument WorkC;
+        List<CardOnTableDocument> MainCList;
+        List<CardOnTableDocument> WorkCList;
 
-        if (gameTableEntity.getIsFirstPlayerStep()) {
-            MainC = gameTableEntity.getFirstPlayer().getCardsOnTable().get(MainCardId);
-            WorkC = gameTableEntity.getSecondPlayer().getCardsOnTable().get(WorkCardId);
-            MainCList = gameTableEntity.getFirstPlayer().getCardsOnTable();
-            WorkCList = gameTableEntity.getSecondPlayer().getCardsOnTable();
+        if (gameTableDocument.getIsFirstPlayerStep()) {
+            MainC = gameTableDocument.getFirstPlayer().getCardsOnTable().get(MainCardId);
+            WorkC = gameTableDocument.getSecondPlayer().getCardsOnTable().get(WorkCardId);
+            MainCList = gameTableDocument.getFirstPlayer().getCardsOnTable();
+            WorkCList = gameTableDocument.getSecondPlayer().getCardsOnTable();
         }
         else {
-            MainC = gameTableEntity.getSecondPlayer().getCardsOnTable().get(MainCardId);
-            WorkC = gameTableEntity.getFirstPlayer().getCardsOnTable().get(WorkCardId);
-            MainCList = gameTableEntity.getSecondPlayer().getCardsOnTable();
-            WorkCList = gameTableEntity.getFirstPlayer().getCardsOnTable();
+            MainC = gameTableDocument.getSecondPlayer().getCardsOnTable().get(MainCardId);
+            WorkC = gameTableDocument.getFirstPlayer().getCardsOnTable().get(WorkCardId);
+            MainCList = gameTableDocument.getSecondPlayer().getCardsOnTable();
+            WorkCList = gameTableDocument.getFirstPlayer().getCardsOnTable();
         }
 
         if (MainC.getCanAttack()) {
@@ -145,6 +151,7 @@ public class CardUseService {
 
             MainC.setCanAttack(false);
 
+
             if (MainC.getHp() <= 0) {
                 MainCList.remove(MainCardId);
             }
@@ -153,25 +160,25 @@ public class CardUseService {
             }
         }
 
-        gameTableRepository.save(gameTableEntity);
+        gameTableRepository.save(gameTableDocument);
     }
 
 
     public void attackPlayer() {
-        GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();
+        GameTableDocument gameTableDocument = gameTableRepository.findById("1").get();
 
-        int MainCardId = gameTableEntity.getHover().getTable();
+        int MainCardId = gameTableDocument.getHover().getTable();
 
-        CardOnTableEntity MainC;
-        PlayerEntity WorkP;
+        CardOnTableDocument MainC;
+        PlayerDocument WorkP;
 
-        if (gameTableEntity.getIsFirstPlayerStep()) {
-            MainC = gameTableEntity.getFirstPlayer().getCardsOnTable().get(MainCardId);
-            WorkP = gameTableEntity.getSecondPlayer();
+        if (gameTableDocument.getIsFirstPlayerStep()) {
+            MainC = gameTableDocument.getFirstPlayer().getCardsOnTable().get(MainCardId);
+            WorkP = gameTableDocument.getSecondPlayer();
         }
         else {
-            MainC = gameTableEntity.getSecondPlayer().getCardsOnTable().get(MainCardId);
-            WorkP = gameTableEntity.getFirstPlayer();
+            MainC = gameTableDocument.getSecondPlayer().getCardsOnTable().get(MainCardId);
+            WorkP = gameTableDocument.getFirstPlayer();
         }
 
         if (MainC.getCanAttack()) {
@@ -184,19 +191,19 @@ public class CardUseService {
             }
         }
 
-        gameTableRepository.save(gameTableEntity);
+        gameTableRepository.save(gameTableDocument);
     }
 
 
     public Optional<Card> getCardInHand() {
-        GameTableEntity gameTableEntity = gameTableRepository.findById("1").get();
-        int index = gameTableEntity.getHover().getHand();
-        PlayerEntity mainPlayer;
-        if (gameTableEntity.getIsFirstPlayerStep()) {
-            mainPlayer = gameTableEntity.getFirstPlayer();
+        GameTableDocument gameTableDocument = gameTableRepository.findById("1").get();
+        int index = gameTableDocument.getHover().getHand();
+        PlayerDocument mainPlayer;
+        if (gameTableDocument.getIsFirstPlayerStep()) {
+            mainPlayer = gameTableDocument.getFirstPlayer();
         }
         else {
-            mainPlayer = gameTableEntity.getSecondPlayer();
+            mainPlayer = gameTableDocument.getSecondPlayer();
         }
 
         if (

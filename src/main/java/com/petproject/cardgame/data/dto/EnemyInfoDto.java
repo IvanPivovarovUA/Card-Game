@@ -1,6 +1,6 @@
-package com.petproject.cardgame.model;
+package com.petproject.cardgame.data.dto;
 
-import com.petproject.cardgame.entity.CardOnTableEntity;
+import com.petproject.cardgame.data.document.CardOnTableDocument;
 import lombok.Data;
 
 import java.util.List;
@@ -9,7 +9,7 @@ import java.util.List;
 public class EnemyInfoDto {
 
     public Integer hand;
-    public List<CardOnTableEntity> table;
+    public List<CardOnTableDocument> table;
     public List<CardDto> dropedCards;
 
     public String nickname;
