@@ -46,13 +46,34 @@ public class GameTableMapper {
                 cardDtoList
         );
 
-        infoForPlayerDto.getYourInfo().setTable(
+
+        cardDtoList =
                 mainPlayer.getCardsOnTable()
+                        .stream()
+                        .map(
+                                c -> new CardDto(c)
+                        )
+                        .collect(
+                                Collectors.toList()
+                        );
+        infoForPlayerDto.getYourInfo().setTable(
+                cardDtoList
         );
 
-        infoForPlayerDto.getEnemyInfo().setTable(
+
+        cardDtoList =
                 workPlayer.getCardsOnTable()
+                        .stream()
+                        .map(
+                                c -> new CardDto(c)
+                        )
+                        .collect(
+                                Collectors.toList()
+                        );
+        infoForPlayerDto.getEnemyInfo().setTable(
+                cardDtoList
         );
+
 
         infoForPlayerDto.getEnemyInfo().setHand(
                 workPlayer.getCardsOnHand().size()
@@ -73,7 +94,7 @@ public class GameTableMapper {
 
 
         cardDtoList =
-                mainPlayer.getDropedSpells()
+                mainPlayer.getDroppedCards()
                         .stream()
                         .map(
                                 c -> new CardDto(c)
@@ -81,11 +102,11 @@ public class GameTableMapper {
                         .collect(
                                 Collectors.toList()
                         );
-        infoForPlayerDto.getYourInfo().setDropedCards(cardDtoList);
+        infoForPlayerDto.getYourInfo().setDroppedCards(cardDtoList);
 
 
         cardDtoList =
-                workPlayer.getDropedSpells()
+                workPlayer.getDroppedCards()
                         .stream()
                         .map(
                                 c -> new CardDto(c)
@@ -93,7 +114,8 @@ public class GameTableMapper {
                         .collect(
                                 Collectors.toList()
                         );
-        infoForPlayerDto.getEnemyInfo().setDropedCards(cardDtoList);
+        infoForPlayerDto.getEnemyInfo().setDroppedCards(cardDtoList);
+
 
         return infoForPlayerDto;
     }

@@ -80,7 +80,7 @@ public class GameProcessService {
                     cardOnTableDocument.setCanAttack(false);
                 }
             }
-            gameTableDocument.getFirstPlayer().getDropedSpells().clear();
+//            gameTableDocument.getFirstPlayer().getDroppedCards().clear();
         }
         else {
             gameTableDocument.setIsFirstPlayerStep(true);
@@ -95,8 +95,11 @@ public class GameProcessService {
                     cardOnTableDocument.setCanAttack(false);
                 }
             }
-            gameTableDocument.getSecondPlayer().getDropedSpells().clear();
+//            gameTableDocument.getSecondPlayer().getDroppedCards().clear();
         }
+
+        gameTableDocument.getFirstPlayer().getDroppedCards().clear();
+        gameTableDocument.getSecondPlayer().getDroppedCards().clear();
 
         gameTableRepository.save(gameTableDocument);
     }
@@ -186,6 +189,7 @@ public class GameProcessService {
 
         return false;
     }
+
 
 
     public boolean checkAndDoGameOver() {

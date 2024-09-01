@@ -6,7 +6,7 @@ var save_message = "";
 
 
 function editHtml(message) {
-//    console.log(message);
+    console.log(message);
 
     $("#eh").html("");
     $("#ed").html("");
@@ -15,27 +15,73 @@ function editHtml(message) {
     $("#yd").html("");
     $("#yh").html("");
 
-    for (let i in message.enemyInfo.dropedCards) {
-        var photo = setPhoto(message.enemyInfo.dropedCards[i].type);
+    for (let i in message.enemyInfo.droppedCards) {
+        var photo = setPhoto(message.enemyInfo.droppedCards[i].type);
+
+        var hoverborder = "";
+        var d = 0;
+        var s = "";
+        if (save_message != "") {
+            for (var c in save_message.enemyInfo.table) {
+                if (
+                    save_message.enemyInfo.table[c].id == message.enemyInfo.droppedCards[i].id
+                    && save_message.enemyInfo.table[c].hp != message.enemyInfo.droppedCards[i].hp
+                ) {
+                    d = - save_message.enemyInfo.table[c].hp + message.enemyInfo.droppedCards[i].hp
+                    hoverborder += " redborder";
+                    s = " show ";
+
+                    if (d > 0) {
+                        d = "+" + d;
+                    }
+                }
+            }
+        }
+
         $("#ed").append(
-              `<div class='card'>
+              `<div class='card ${hoverborder}'>
                   <div class='sprite' style='background-image: url("${photo}")'></div>
-                  <p class='hp'>${message.enemyInfo.dropedCards[i].hp}</p>
-                  <p class='power'>${message.enemyInfo.dropedCards[i].power}</p>
+                  <p class='hp'>${message.enemyInfo.droppedCards[i].hp}</p>
+                  <p class='power'>${message.enemyInfo.droppedCards[i].power}</p>
+                  <div class='hitblock ${s}'> ${d} </div>
               </div>`
         );
+
     }
 
-    for (let i in message.yourInfo.dropedCards) {
-        var photo = setPhoto(message.yourInfo.dropedCards[i].type);
+    for (let i in message.yourInfo.droppedCards) {
+        var photo = setPhoto(message.yourInfo.droppedCards[i].type);
+
+        var hoverborder = "";
+        var d = 0;
+        var s = "";
+        if (save_message != "") {
+            for (var c in save_message.yourInfo.table) {
+                if (
+                    save_message.yourInfo.table[c].id == message.yourInfo.droppedCards[i].id
+                    && save_message.yourInfo.table[c].hp != message.yourInfo.droppedCards[i].hp
+                ) {
+                    d = - save_message.yourInfo.table[c].hp + message.yourInfo.droppedCards[i].hp
+                    hoverborder += " redborder";
+                    s = " show ";
+
+                    if (d > 0) {
+                        d = "+" + d;
+                    }
+                }
+            }
+        }
+
         $("#yd").append(
-           `<div class='card'>
+           `<div class='card ${hoverborder}'>
                <div class='sprite' style='background-image: url("${photo}")'></div>
-               <p class='hp'>${message.yourInfo.dropedCards[i].hp}</p>
-               <p class='power'>${message.yourInfo.dropedCards[i].power}</p>
+               <p class='hp'>${message.yourInfo.droppedCards[i].hp}</p>
+               <p class='power'>${message.yourInfo.droppedCards[i].power}</p>
+               <div class='hitblock ${s}'> ${d} </div>
            </div>`
         );
     }
+    /////////////////////////////////////////////////////
 
     for (let i = 0; i < message.enemyInfo.hand; i++) {
         var photo = setPhoto('C');
@@ -86,6 +132,10 @@ function editHtml(message) {
                     d = - save_message.enemyInfo.table[c].hp + message.enemyInfo.table[i].hp
                     hoverborder += " redborder";
                     s = " show ";
+
+                    if (d > 0) {
+                        d = "+" + d;
+                    }
                 }
             }
         }
@@ -126,6 +176,7 @@ function editHtml(message) {
         var s = "";
         if (save_message != "") {
             for (var c in save_message.yourInfo.table) {
+
                  if (
                      save_message.yourInfo.table[c].id == message.yourInfo.table[i].id
                      && save_message.yourInfo.table[c].hp != message.yourInfo.table[i].hp
@@ -133,6 +184,10 @@ function editHtml(message) {
                     d = - save_message.yourInfo.table[c].hp + message.yourInfo.table[i].hp;
                     hoverborder += " redborder";
                     s = " show ";
+
+                    if (d > 0) {
+                        d = "+" + d;
+                    }
                  }
             }
         }
@@ -177,54 +232,49 @@ function editHtml(message) {
     setHitHover(message);
 
 
-
-    if (save_message != "") {
-       for (let i in save_message.enemyInfo.table) {
-
-          var t = true;
-          for (let c in message.enemyInfo.table) {
-                if (save_message.enemyInfo.table[i].id == message.enemyInfo.table[c].id) {
-                    t = false;
-                }
-          }
-
-          if (t) {
-             var photo = setPhoto(save_message.enemyInfo.table[i].type);
-             $("#ed").append(
-                   `<div class='card'>
-                       <div class='sprite' style='background-image: url("${photo}")'></div>
-                       <p class='hp'>${save_message.enemyInfo.table[i].hp}</p>
-                       <p class='power'>${save_message.enemyInfo.table[i].power}</p>
-                   </div>`
-             );
-          }
-
-       }
-
-       for (let i in save_message.yourInfo.table) {
-
-          var t = true;
-          for (let c in message.yourInfo.table) {
-                if (save_message.yourInfo.table[i].id == message.yourInfo.table[c].id) {
-                    t = false;
-                }
-          }
-
-            if (t) {
-                var photo = setPhoto(save_message.yourInfo.table[i].type);
-                $("#yd").append(
-                    `<div class='card'>
-                     <div class='sprite' style='background-image: url("${photo}")'></div>
-                     <p class='hp'>${save_message.yourInfo.table[i].hp}</p>
-                     <p class='power'>${save_message.yourInfo.table[i].power}</p>
-                </div>`
-                );
-            }
-
-       }
-    }
-
-
+//    if (save_message != "") {
+//       for (let i in save_message.enemyInfo.table) {
+//
+//          var t = true;
+//          for (let c in message.enemyInfo.table) {
+//                if (save_message.enemyInfo.table[i].id == message.enemyInfo.table[c].id) {
+//                    t = false;
+//                }
+//          }
+//
+//          if (t) {
+//             var photo = setPhoto(save_message.enemyInfo.table[i].type);
+//             $("#ed").append(
+//                   `<div class='card'>
+//                       <div class='sprite' style='background-image: url("${photo}")'></div>
+//                       <p class='hp'>${save_message.enemyInfo.table[i].hp}</p>
+//                       <p class='power'>${save_message.enemyInfo.table[i].power}</p>
+//                   </div>`
+//             );
+//          }
+//
+//       }
+//       for (let i in save_message.yourInfo.table) {
+//          var t = true;
+//          for (let c in message.yourInfo.table) {
+//                if (save_message.yourInfo.table[i].id == message.yourInfo.table[c].id) {
+//                    t = false;
+//                }
+//          }
+//            if (t) {
+//                var photo = setPhoto(save_message.yourInfo.table[i].type);
+//                $("#yd").append(
+//                    `<div class='card'>
+//                     <div class='sprite' style='background-image: url("${photo}")'></div>
+//                     <p class='hp'>${save_message.yourInfo.table[i].hp}</p>
+//                     <p class='power'>${save_message.yourInfo.table[i].power}</p>
+//                </div>`
+//                );
+//            }
+//
+//       }
+//
+//    }
 //
 //    setTimeout(
 //        () => {
@@ -251,7 +301,6 @@ function setHitHover(message) {
             $("#enemy .hitblock_for_playerbord").addClass("show");
             $("#enemy .hitblock_for_playerbord").html(-save_message.enemyInfo.hp + message.enemyInfo.hp);
         }
-
 
     }
 }

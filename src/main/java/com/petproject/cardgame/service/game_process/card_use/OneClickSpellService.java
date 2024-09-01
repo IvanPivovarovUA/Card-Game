@@ -21,7 +21,7 @@ public class OneClickSpellService {
 
     public void defaultUnitCard() {
         cardUseService.putCardOnTable();
-        cardUseService.removeHoverCardFromHand();
+        cardUseService.droppedHoverCardFromHand();
     }
 
 
@@ -42,7 +42,7 @@ public class OneClickSpellService {
         gameTableRepository.save(gameTableDocument);
 
         cardUseService.putCardOnTable();
-        cardUseService.removeHoverCardFromHand();
+        cardUseService.droppedHoverCardFromHand();
     }
 
     public void arrowSpell() {
@@ -64,22 +64,25 @@ public class OneClickSpellService {
             cardOnTableDocument.plusHp(-Card.A.getPower());
         }
 
-        workPlayer.setCardsOnTable(
-                workPlayer.getCardsOnTable()
-                        .stream()
-                        .filter(c -> c.getHp() > 0)
-                        .toList()
-        );
+//        workPlayer.setCardsOnTable(
+//                workPlayer.getCardsOnTable()
+//                        .stream()
+//                        .filter(c -> c.getHp() > 0)
+//                        .toList()
+//        );
 
         workPlayer.plusHp(-Card.A.getPower());
         if (workPlayer.getHp() <= 0) {
             System.out.println("End from arrowSpell!!!!!!");
         }
 
-        mainPlayer.getDropedSpells().add(Card.A);
+
+        mainPlayer.getDroppedCards().add(
+                cardUseService.createCardOnTable(Card.A)
+        );
 
         gameTableRepository.save(gameTableDocument);
-        cardUseService.removeHoverCardFromHand();
+        cardUseService.droppedHoverCardFromHand();
 
     }
 
@@ -104,24 +107,26 @@ public class OneClickSpellService {
             cardOnTableDocument.plusHp(-Card.A.getPower());
         }
 
-        mainPlayer.setCardsOnTable(
-                mainPlayer.getCardsOnTable()
-                        .stream()
-                        .filter(c -> c.getHp() > 0)
-                        .toList()
-        );
+//        mainPlayer.setCardsOnTable(
+//                mainPlayer.getCardsOnTable()
+//                        .stream()
+//                        .filter(c -> c.getHp() > 0)
+//                        .toList()
+//        );
+//
+//        workPlayer.setCardsOnTable(
+//                workPlayer.getCardsOnTable()
+//                        .stream()
+//                        .filter(c -> c.getHp() > 0)
+//                        .toList()
+//        );
 
-        workPlayer.setCardsOnTable(
-                workPlayer.getCardsOnTable()
-                        .stream()
-                        .filter(c -> c.getHp() > 0)
-                        .toList()
+        mainPlayer.getDroppedCards().add(
+                cardUseService.createCardOnTable(Card.F)
         );
-
-        mainPlayer.getDropedSpells().add(Card.F);
 
         gameTableRepository.save(gameTableDocument);
-        cardUseService.removeHoverCardFromHand();
+        cardUseService.droppedHoverCardFromHand();
     }
 
     public void moneySpell() {
@@ -138,10 +143,12 @@ public class OneClickSpellService {
 
         mainPlayer.plusMana(Card.M.getPower());
 
-        mainPlayer.getDropedSpells().add(Card.M);
+        mainPlayer.getDroppedCards().add(
+                cardUseService.createCardOnTable(Card.M)
+        );
 
         gameTableRepository.save(gameTableDocument);
-        cardUseService.removeHoverCardFromHand();
+        cardUseService.droppedHoverCardFromHand();
     }
 
     public void ishakSpell() {
@@ -154,14 +161,18 @@ public class OneClickSpellService {
         else {
             mainPlayer = gameTableDocument.getSecondPlayer();
         }
-        mainPlayer.getDropedSpells().add(Card.I);
+
+        mainPlayer.getDroppedCards().add(
+                cardUseService.createCardOnTable(Card.I)
+        );
+
         gameTableRepository.save(gameTableDocument);
 
 
         for (int i = Card.I.getPower(); i > 0; i--) {
             cardUseService.addCardInHand();
         }
-        cardUseService.removeHoverCardFromHand();
+        cardUseService.droppedHoverCardFromHand();
     }
 
 }

@@ -123,7 +123,7 @@ public class LobbyService {
                         10,
                         new ArrayList<Card>(),
                         new ArrayList<CardOnTableDocument>(),
-                        new ArrayList<Card>()
+                        new ArrayList<CardOnTableDocument>()
                 )
             );
             lobby.remove(RandomNumber);
@@ -136,7 +136,7 @@ public class LobbyService {
                         10,
                         new ArrayList<Card>(),
                         new ArrayList<CardOnTableDocument>(),
-                        new ArrayList<Card>()
+                        new ArrayList<CardOnTableDocument>()
                 )
             );
             lobby.remove(RandomNumber);

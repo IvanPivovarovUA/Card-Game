@@ -115,15 +115,14 @@ public class GameProcessController {
         if (gameProcessService.isUserHaveExec(principal.getName())) {
             if (gameProcessService.useCard()) {
                 cardHoverService.reset();
-                if (gameProcessService.checkAndDoGameOver()) {
-                    redirectToLobby();
+                cardUseService.droppedDiedCards();
+                if (!gameProcessService.checkAndDoGameOver()) {
+                    sendGameTableInfo();
                 }
                 else {
-                    sendGameTableInfo();
+                    redirectToLobby();
                 }
             }
         }
     }
-
-
 }

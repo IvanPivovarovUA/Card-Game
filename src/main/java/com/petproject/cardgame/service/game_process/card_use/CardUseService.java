@@ -38,29 +38,19 @@ public class CardUseService {
         gameTableRepository.save(gameTableDocument);
     }
 
+    public CardOnTableDocument createCardOnTable(Card card) {
+        CardOnTableDocument cardOnTableDocument = new CardOnTableDocument();
 
-    public void removeHoverCardFromHand() {
-        GameTableDocument gameTableDocument = gameTableRepository.findById("1").get();
-        int index = gameTableDocument.getHover().getHand();
+        cardOnTableDocument.setType(card);
+        cardOnTableDocument.setHp(card.getHp());
+        cardOnTableDocument.setPower(card.getPower());
 
-        PlayerDocument mainPlayer;
-        if (gameTableDocument.getIsFirstPlayerStep()) {
-            mainPlayer = gameTableDocument.getFirstPlayer();
-        }
-        else {
-            mainPlayer = gameTableDocument.getSecondPlayer();
-        }
+        cardOnTableDocument.setId(0);
 
-        mainPlayer.plusMana(
-                -mainPlayer.getCardsOnHand().get(index).getMana()
-        );
-        mainPlayer.getCardsOnHand().remove(index);
-
-        gameTableRepository.save(gameTableDocument);
+        return cardOnTableDocument;
     }
 
-
-    private CardOnTableDocument createCardOnTable(Card card, int id) {
+    public CardOnTableDocument createCardOnTable(Card card, int id) {
         CardOnTableDocument cardOnTableDocument = new CardOnTableDocument();
 
         cardOnTableDocument.setType(card);
@@ -152,12 +142,12 @@ public class CardUseService {
             MainC.setCanAttack(false);
 
 
-            if (MainC.getHp() <= 0) {
-                MainCList.remove(MainCardId);
-            }
-            if (WorkC.getHp() <= 0) {
-                WorkCList.remove(WorkCardId);
-            }
+//            if (MainC.getHp() <= 0) {
+//                MainCList.remove(MainCardId);
+//            }
+//            if (WorkC.getHp() <= 0) {
+//                WorkCList.remove(WorkCardId);
+//            }
         }
 
         gameTableRepository.save(gameTableDocument);
@@ -194,7 +184,6 @@ public class CardUseService {
         gameTableRepository.save(gameTableDocument);
     }
 
-
     public Optional<Card> getCardInHand() {
         GameTableDocument gameTableDocument = gameTableRepository.findById("1").get();
         int index = gameTableDocument.getHover().getHand();
@@ -216,6 +205,60 @@ public class CardUseService {
         else  {
             return Optional.empty();
         }
+    }
+
+
+    public void droppedHoverCardFromHand() {
+        GameTableDocument gameTableDocument = gameTableRepository.findById("1").get();
+        int index = gameTableDocument.getHover().getHand();
+
+        PlayerDocument mainPlayer;
+        if (gameTableDocument.getIsFirstPlayerStep()) {
+            mainPlayer = gameTableDocument.getFirstPlayer();
+        }
+        else {
+            mainPlayer = gameTableDocument.getSecondPlayer();
+        }
+
+        mainPlayer.plusMana(
+                -mainPlayer.getCardsOnHand().get(index).getMana()
+        );
+        mainPlayer.getCardsOnHand().remove(index);
+
+        gameTableRepository.save(gameTableDocument);
+    }
+
+    public void droppedDiedCards() {
+        GameTableDocument gameTableDocument = gameTableRepository.findById("1").get();
+
+        List<CardOnTableDocument> cardsOnTable = gameTableDocument.getFirstPlayer().getCardsOnTable();
+        List<CardOnTableDocument> droppedCards = gameTableDocument.getFirstPlayer().getDroppedCards();
+
+        for (int i = Math.abs(cardsOnTable.size()) - 1 ; i >= 0; i--) {
+            if (cardsOnTable.get(i).getHp() <= 0) {
+                droppedCards.add(
+                        cardsOnTable.get(i)
+                );
+
+                cardsOnTable.remove(i);
+            }
+        }
+
+        cardsOnTable = gameTableDocument.getSecondPlayer().getCardsOnTable();
+        droppedCards = gameTableDocument.getSecondPlayer().getDroppedCards();
+
+        for (int i = Math.abs(cardsOnTable.size()) - 1; i >= 0; i--) {
+            if (cardsOnTable.get(i).getHp() <= 0) {
+                droppedCards.add(
+                        cardsOnTable.get(i)
+                );
+
+                cardsOnTable.remove(i);
+            }
+        }
+
+        gameTableRepository.save(gameTableDocument);
+
     }
 
 }

@@ -28,7 +28,7 @@ public class GameTableDocument {
 
     public GameTableDocument() {
         this.id = "1";
-        this.idForCards = 0;
+        this.idForCards = 1;
 
         this.setWinner("?");
         this.lobby = new ArrayList<>();

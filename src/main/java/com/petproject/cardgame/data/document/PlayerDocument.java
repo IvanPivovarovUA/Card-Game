@@ -16,7 +16,7 @@ public class PlayerDocument {
     private Integer mana;// 0 - 10
     private List<Card> cardsOnHand;
     private List<CardOnTableDocument> cardsOnTable;
-    private List<Card> dropedSpells;
+    private List<CardOnTableDocument> droppedCards;
 
     public void plusHp(int hp) {
         this.hp += hp;

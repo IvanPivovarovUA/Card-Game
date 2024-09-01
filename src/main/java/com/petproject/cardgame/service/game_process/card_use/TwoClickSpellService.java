@@ -76,10 +76,12 @@ public class TwoClickSpellService {
 
         mainPlayer.getCardsOnTable().get(index).setCanAttack(true);
 
-        mainPlayer.getDropedSpells().add(Card.P);
+        mainPlayer.getDroppedCards().add(
+                cardUseService.createCardOnTable(Card.P)
+        );
 
         gameTableRepository.save(gameTableDocument);
-        cardUseService.removeHoverCardFromHand();
+        cardUseService.droppedHoverCardFromHand();
 
     }
 
@@ -97,10 +99,12 @@ public class TwoClickSpellService {
 
         mainPlayer.getCardsOnTable().get(index).plusPower(Card.S.getPower());
 
-        mainPlayer.getDropedSpells().add(Card.S);
+        mainPlayer.getDroppedCards().add(
+                cardUseService.createCardOnTable(Card.S)
+        );
 
         gameTableRepository.save(gameTableDocument);
-        cardUseService.removeHoverCardFromHand();
+        cardUseService.droppedHoverCardFromHand();
     }
 
     public void crossSpell() {
@@ -119,10 +123,12 @@ public class TwoClickSpellService {
 
         mainPlayer.getCardsOnTable().get(index).plusHp(Card.H.getPower());
 
-        mainPlayer.getDropedSpells().add(Card.H);
+        mainPlayer.getDroppedCards().add(
+                cardUseService.createCardOnTable(Card.H)
+        );
 
         gameTableRepository.save(gameTableDocument);
-        cardUseService.removeHoverCardFromHand();
+        cardUseService.droppedHoverCardFromHand();
     }
 
     public void turretSpell() {
@@ -144,21 +150,23 @@ public class TwoClickSpellService {
 
         if (tableIndex != -1) {
             workPlayer.getCardsOnTable().get(tableIndex).plusHp(-Card.T.getPower());
-            if (workPlayer.getCardsOnTable().get(tableIndex).getHp() <= 0) {
-                workPlayer.getCardsOnTable().remove(tableIndex);
-            }
+//            if (workPlayer.getCardsOnTable().get(tableIndex).getHp() <= 0) {
+//                workPlayer.getCardsOnTable().remove(tableIndex);
+//            }
         }
         else {
             workPlayer.plusHp(-Card.T.getPower());
-            if (workPlayer.getHp() <= 0) {
-                System.out.println("end in TwoClickSpellService!!!!!!!!!");
-            }
+//            if (workPlayer.getHp() <= 0) {
+//                System.out.println("end in TwoClickSpellService!!!!!!!!!");
+//            }
         }
 
-        mainPlayer.getDropedSpells().add(Card.T);
+        mainPlayer.getDroppedCards().add(
+                cardUseService.createCardOnTable(Card.T)
+        );
 
         gameTableRepository.save(gameTableDocument);
-        cardUseService.removeHoverCardFromHand();
+        cardUseService.droppedHoverCardFromHand();
     }
 
     public void potionSpell() {
@@ -182,10 +190,12 @@ public class TwoClickSpellService {
             workPlayer.getCardsOnTable().get(index).setPower(1);
         }
 
-        mainPlayer.getDropedSpells().add(Card.z);
+        mainPlayer.getDroppedCards().add(
+                cardUseService.createCardOnTable(Card.z)
+        );
 
         gameTableRepository.save(gameTableDocument);
-        cardUseService.removeHoverCardFromHand();
+        cardUseService.droppedHoverCardFromHand();
     }
 
 
